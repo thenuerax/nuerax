@@ -1,47 +1,73 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.4">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
-</head>
-<body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="en" class="bg-[#1C1F22] text-[#F5F7FA]"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Nuerax — Real-Time AI News&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;body class="flex flex-col items-center justify-center min-h-screen px-6"&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Logo (optional for now) --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- &lt;img src="logo.png" alt="Nuerax Logo" class="w-16 h-16 mb-6" /&gt; --&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Headline --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;h1 class="text-4xl md:text-6xl font-semibold text-center leading-tight mb-4"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>The future is moving fast.&lt;br /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>So are we.</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/h1&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Subheadline --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;p class="text-[#A1A6AD] text-lg md:text-xl text-center max-w-xl mb-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>Real-time AI news, insights, and stock market impact — curated for the next generation.</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/p&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- CTA Button --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;a href="#feed" class="bg-[#00FFFF] text-black font-medium px-6 py-3 rounded-xl shadow hover:shadow-cyan-500/40 transition"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>Start Exploring →</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/a&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
-</body>
+<!DOCTYPE html>
+<html lang="en" class="bg-[#1C1F22] text-[#F5F7FA]">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nuerax — Real-Time AI News</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="flex flex-col items-center justify-center px-6 min-h-screen">
+
+    <!-- Hero Section -->
+    <h1 class="text-4xl font-bold text-center mt-12 mb-4">
+      The future is moving fast.<br />So are we.
+    </h1>
+    <p class="text-[#A1A6AD] text-center mb-8 max-w-xl">
+      Real-time AI news, insights, and stock market impact — curated for the next generation.
+    </p>
+    <a href="#feed" class="bg-[#00FFFF] text-black font-medium px-6 py-3 rounded-xl shadow hover:shadow-cyan-500/40 transition">
+      Start Exploring →
+    </a>
+
+    <!-- ========== News Feed Section ========== -->
+<section id="feed" class="w-full max-w-3xl mt-20 px-4">
+    <h2 class="text-2xl font-semibold mb-6 text-[#F5F7FA]">🧠 Latest AI News</h2>
+  
+    <!-- 🔽 Dynamic news will be injected here -->
+    <div id="news-container">
+      <p class="text-[#A1A6AD]">Loading news...</p>
+    </div>
+  </section>
+  
+  <script>
+    const API_KEY = '7956104af18649c0ba2890e09354069a'; // 👈 Replace this with your actual API key from NewsAPI
+    const newsContainer = document.getElementById('news-container');
+  
+    async function fetchAInews() {
+      try {
+        const response = await fetch(
+            `https://newsapi.org/v2/everything?q=AI&sortBy=publishedAt&language=en&pageSize=6&apiKey=${API_KEY}`
+        );
+        const data = await response.json();
+  
+        // Clear loading message
+        newsContainer.innerHTML = '';
+  
+        if (data.articles && data.articles.length > 0) {
+          data.articles.forEach(article => {
+            const card = document.createElement('div');
+            card.className = 'bg-[#2A2D31] p-5 rounded-xl mb-6 shadow hover:shadow-cyan-500/10 transition';
+  
+            card.innerHTML = `
+              <p class="text-sm text-[#A1A6AD] mb-1">${new Date(article.publishedAt).toLocaleDateString()} • ${article.source.name}</p>
+              <h3 class="text-lg font-medium text-[#F5F7FA] mb-2">${article.title}</h3>
+              <p class="text-[#A1A6AD] text-sm mb-2">${article.description || ''}</p>
+              <a href="${article.url}" target="_blank" class="text-[#00FFFF] text-sm underline">Read full article →</a>
+            `;
+  
+            newsContainer.appendChild(card);
+          });
+        } else {
+          newsContainer.innerHTML = '<p class="text-[#A1A6AD]">No news found.</p>';
+        }
+      } catch (error) {
+        newsContainer.innerHTML = '<p class="text-red-500">Failed to load news. Try again later.</p>';
+        console.error(error);
+      }
+    }
+  
+    fetchAInews();
+  </script>
+  
+  </body>
 </html>
