@@ -30,18 +30,19 @@
   </section>
   
   <script>
-    const API_KEY = '7956104af18649c0ba2890e09354069a'; // 👈 Replace this with your actual API key from NewsAPI
+    const API_KEY = '7956104af18649c0ba2890e09354069a'; // 👈 Replace with your actual API key
     const newsContainer = document.getElementById('news-container');
   
     async function fetchAInews() {
       try {
         const response = await fetch(
-            `https://newsapi.org/v2/everything?q=AI&sortBy=publishedAt&language=en&pageSize=6&apiKey=${API_KEY}`
+          `https://newsapi.org/v2/everything?q=ai&sortBy=publishedAt&language=en&pageSize=5&apiKey=${API_KEY}`
         );
         const data = await response.json();
   
-        // Clear loading message
-        newsContainer.innerHTML = '';
+        console.log("🧪 API Response:", data); // ← Check this in the Console
+  
+        newsContainer.innerHTML = ''; // clear loading message
   
         if (data.articles && data.articles.length > 0) {
           data.articles.forEach(article => {
@@ -58,16 +59,62 @@
             newsContainer.appendChild(card);
           });
         } else {
-          newsContainer.innerHTML = '<p class="text-[#A1A6AD]">No news found.</p>';
+          newsContainer.innerHTML = '<p class="text-[#A1A6AD]">No news articles found.</p>';
         }
       } catch (error) {
-        newsContainer.innerHTML = '<p class="text-red-500">Failed to load news. Try again later.</p>';
-        console.error(error);
+        console.error("❌ API Fetch Error:", error);
+        newsContainer.innerHTML = '<p class="text-red-500">Error loading news. Check the console.</p>';
       }
     }
   
     fetchAInews();
   </script>
   
+  <!-- 🧠 AI News Feed Section -->
+<section id="feed" class="w-full max-w-3xl mt-20 px-4 mx-auto">
+    <h2 class="text-2xl font-semibold mb-6 text-[#F5F7FA]">🧠 Latest AI News</h2>
+    <div id="news-container">
+      <p class="text-[#A1A6AD]">Loading news...</p>
+    </div>
+  </section>
+   
+  <script>
+    const newsContainer = document.getElementById('news-container');
+  
+    async function fetchNueraxNews() {
+      try {
+        const res = await fetch('/api/news'); // calling your serverless function
+        const articles = await res.json();
+  
+        newsContainer.innerHTML = ''; // clear loading
+  
+        if (!articles.length) {
+          newsContainer.innerHTML = '<p class="text-[#A1A6AD]">No news articles found.</p>';
+          return;
+        }
+  
+        articles.forEach(article => {
+          const card = document.createElement('div');
+          card.className = 'bg-[#2A2D31] p-5 rounded-xl mb-6 shadow hover:shadow-cyan-500/10 transition';
+  
+          card.innerHTML = `
+            <p class="text-sm text-[#A1A6AD] mb-1">${new Date(article.publishedAt).toLocaleDateString()} • ${article.source.name}</p>
+            <h3 class="text-lg font-medium text-[#F5F7FA] mb-2">${article.title}</h3>
+            <p class="text-[#A1A6AD] text-sm mb-2">${article.description || ''}</p>
+            <a href="${article.url}" target="_blank" class="text-[#00FFFF] text-sm underline">Read full article →</a>
+          `;
+  
+          newsContainer.appendChild(card);
+        });
+      } catch (err) {
+        newsContainer.innerHTML = '<p class="text-red-500">Failed to load news. Try again later.</p>';
+        console.error(err);
+      }
+    }
+  
+    fetchNueraxNews();
+  </script>
+  
+
   </body>
 </html>
