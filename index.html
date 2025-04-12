@@ -70,25 +70,27 @@
     fetchAInews();
   </script>
   
-  <!-- 🧠 AI News Feed Section -->
-<section id="feed" class="w-full max-w-3xl mt-20 px-4 mx-auto">
+ <!-- ========== News Feed Section ========== -->
+<section id="feed" class="w-full max-w-3xl mt-20 px-4">
     <h2 class="text-2xl font-semibold mb-6 text-[#F5F7FA]">🧠 Latest AI News</h2>
+  
+    <!-- 🔽 Dynamic news will be injected here -->
     <div id="news-container">
       <p class="text-[#A1A6AD]">Loading news...</p>
     </div>
   </section>
-   
+  
   <script>
     const newsContainer = document.getElementById('news-container');
   
     async function fetchNueraxNews() {
       try {
-        const res = await fetch('/api/news'); // ✅ Now using your own API
+        const res = await fetch('/api/news');
         const articles = await res.json();
   
-        console.log('🧪 API Response:', articles); // ✅ Works
+        console.log('🧪 Articles from API:', articles); // For debugging
   
-        newsContainer.innerHTML = ''; // clear "Loading..."
+        newsContainer.innerHTML = '';
   
         if (!articles.length) {
           newsContainer.innerHTML = '<p class="text-[#A1A6AD]">No news articles found.</p>';
@@ -109,7 +111,7 @@
           newsContainer.appendChild(card);
         });
       } catch (err) {
-        console.error(err);
+        console.error('❌ Error fetching news:', err);
         newsContainer.innerHTML = '<p class="text-red-500">Failed to load news. Try again later.</p>';
       }
     }
@@ -119,6 +121,5 @@
   
   
   
-
   </body>
 </html>
