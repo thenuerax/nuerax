@@ -19,9 +19,17 @@
       Start Exploring →
     </a>
 
+    <!-- Filter Bar -->
+    <div class="mt-16 mb-6 flex flex-wrap justify-center gap-3">
+      <button class="filter-btn px-4 py-2 rounded-lg bg-[#2A2D31] hover:bg-[#00FFFF] hover:text-black transition" data-company="">All</button>
+      <button class="filter-btn px-4 py-2 rounded-lg bg-[#2A2D31] hover:bg-[#00FFFF] hover:text-black transition" data-company="OpenAI">OpenAI</button>
+      <button class="filter-btn px-4 py-2 rounded-lg bg-[#2A2D31] hover:bg-[#00FFFF] hover:text-black transition" data-company="Meta">Meta</button>
+      <button class="filter-btn px-4 py-2 rounded-lg bg-[#2A2D31] hover:bg-[#00FFFF] hover:text-black transition" data-company="Google">Google</button>
+      <button class="filter-btn px-4 py-2 rounded-lg bg-[#2A2D31] hover:bg-[#00FFFF] hover:text-black transition" data-company="Nvidia">Nvidia</button>
+    </div>
+
     <!-- News Feed Section -->
-    <section id="feed" class="w-full max-w-3xl mt-20 px-4 mx-auto">
-      <h2 class="text-2xl font-semibold mb-6 text-[#F5F7FA]">🧠 Latest AI News</h2>
+    <section id="feed" class="w-full max-w-3xl mt-6 px-4 mx-auto">
       <div id="news-container">
         <p class="text-[#A1A6AD]">Loading news...</p>
       </div>
@@ -30,27 +38,32 @@
     <!-- JavaScript -->
     <script>
       const newsContainer = document.getElementById('news-container');
+      const filterButtons = document.querySelectorAll('.filter-btn');
 
-      async function fetchNueraxNews() {
+      async function fetchNueraxNews(filter = '') {
         try {
           const res = await fetch('/api/news');
           const articles = await res.json();
 
-          console.log('🧪 Articles from API:', articles);
+          newsContainer.innerHTML = '';
 
-          newsContainer.innerHTML = ''; // Clear loading message
+          const filtered = filter
+            ? articles.filter(article => article.title.toLowerCase().includes(filter.toLowerCase()))
+            : articles;
 
-          if (!articles.length) {
+          if (!filtered.length) {
             newsContainer.innerHTML = '<p class="text-[#A1A6AD]">No news articles found.</p>';
             return;
           }
 
-          articles.forEach(article => {
+          filtered.forEach(article => {
+            const timeAgo = getHoursAgo(article.publishedAt);
+
             const card = document.createElement('div');
             card.className = 'bg-[#2A2D31] p-5 rounded-xl mb-6 shadow hover:shadow-cyan-500/10 transition';
 
             card.innerHTML = `
-              <p class="text-sm text-[#A1A6AD] mb-1">${new Date(article.publishedAt).toLocaleDateString()} • ${article.source.name}</p>
+              <p class="text-sm text-[#A1A6AD] mb-1">${timeAgo} • ${article.source.name}</p>
               <h3 class="text-lg font-medium text-[#F5F7FA] mb-2">${article.title}</h3>
               <p class="text-[#A1A6AD] text-sm mb-2">${article.description || ''}</p>
               <a href="${article.url}" target="_blank" class="text-[#00FFFF] text-sm underline">Read full article →</a>
@@ -59,13 +72,12 @@
             newsContainer.appendChild(card);
           });
         } catch (err) {
-          console.error('❌ Error fetching news:', err);
-          newsContainer.innerHTML = '<p class="text-red-500">Failed to load news. Try again later.</p>';
+          console.error('❌ Error:', err);
+          newsContainer.innerHTML = '<p class="text-red-500">Failed to load news.</p>';
         }
       }
 
-      fetchNueraxNews();
-    </script>
-
-  </body>
-</html>
+      function getHoursAgo(dateString) {
+        const hours = Math.floor((Date.now() - new Date(dateString)) / (1000 * 60 * 60));
+        return hours < 1 ? 'Just now'
+        
