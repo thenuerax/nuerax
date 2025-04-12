@@ -4,103 +4,93 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nuerax — Real-Time AI News</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="flex flex-col items-center justify-center px-6 min-h-screen">
+
+    <!-- Hero Section -->
+    <h1 class="text-4xl font-bold text-center mt-12 mb-4">
+      The future is moving fast.<br />So are we.
+    </h1>
+    <p class="text-[#A1A6AD] text-center mb-8 max-w-xl">
+      Real-time AI news, insights, and stock market impact — curated for the next generation.
+    </p>
+    <a href="#feed" class="bg-[#00FFFF] text-black font-medium px-6 py-3 rounded-xl shadow hover:shadow-cyan-500/40 transition">
+      Start Exploring →
+    </a>
+
+    <!-- Filter Bar -->
+    <div class="mt-16 mb-6 flex flex-wrap justify-center gap-3">
+      <button class="filter-btn px-4 py-2 rounded-lg bg-[#2A2D31] hover:bg-[#00FFFF] hover:text-black transition" data-company="">All</button>
+      <button class="filter-btn px-4 py-2 rounded-lg bg-[#2A2D31] hover:bg-[#00FFFF] hover:text-black transition" data-company="OpenAI">OpenAI</button>
+      <button class="filter-btn px-4 py-2 rounded-lg bg-[#2A2D31] hover:bg-[#00FFFF] hover:text-black transition" data-company="Meta">Meta</button>
+      <button class="filter-btn px-4 py-2 rounded-lg bg-[#2A2D31] hover:bg-[#00FFFF] hover:text-black transition" data-company="Google">Google</button>
+      <button class="filter-btn px-4 py-2 rounded-lg bg-[#2A2D31] hover:bg-[#00FFFF] hover:text-black transition" data-company="Nvidia">Nvidia</button>
+    </div>
+
+    <!-- News Feed Section -->
+    <section id="feed" class="w-full max-w-3xl mt-6 px-4 mx-auto">
+      <div id="news-container">
+        <p class="text-[#A1A6AD]">Loading news...</p>
+      </div>
+    </section>
+
+    <!-- Script -->
     <script>
-        const newsContainer = document.getElementById('news-container');
-        const filterButtons = document.querySelectorAll('.filter-btn');
-      
-        function getHoursAgo(dateString) {
-          const hours = Math.floor((Date.now() - new Date(dateString)) / (1000 * 60 * 60));
-          return hours < 1 ? 'Just now' : `${hours} hour${hours !== 1 ? 's' : ''} ago`;
-        }
-      
-        async function fetchNueraxNews(filter = '') {
-          try {
-            const companyQuery = filter || 'ai'; // ✅ Fix for first load
-            const res = await fetch(`/api/news?company=${encodeURIComponent(companyQuery)}`);
-            const articles = await res.json();
-      
-            console.log('🧪 Articles from API:', articles); // Debug log
-      
-            newsContainer.innerHTML = '';
-      
-            if (!articles.length) {
-              newsContainer.innerHTML = '<p class="text-[#A1A6AD]">No news articles found.</p>';
-              return;
-            }
-      
-            articles.forEach(article => {
-              const timeAgo = getHoursAgo(article.publishedAt);
-      
-              const card = document.createElement('div');
-              card.className = 'bg-[#2A2D31] p-5 rounded-xl mb-6 shadow hover:shadow-cyan-500/10 transition';
-      
-              card.innerHTML = `
-                <p class="text-sm text-[#A1A6AD] mb-1">${timeAgo} • ${article.source.name}</p>
-                <h3 class="text-lg font-medium text-[#F5F7FA] mb-2">${article.title}</h3>
-                <p class="text-[#A1A6AD] text-sm mb-2">${article.description || ''}</p>
-                <a href="${article.url}" target="_blank" class="text-[#00FFFF] text-sm underline">Read full article →</a>
-              `;
-      
-              newsContainer.appendChild(card);
-            });
-          } catch (err) {
-            console.error('❌ Error fetching news:', err);
-            newsContainer.innerHTML = '<p class="text-red-500">Failed to load news. Try again later.</p>';
-          }
-        }
-      
-        // ✅ Filter button click events
-        filterButtons.forEach(button => {
-          button.addEventListener('click', () => {
-            const company = button.getAttribute('data-company');
-            fetchNueraxNews(company);
-          });
-        });
-      
-        // ✅ Load default on first load
-        fetchNueraxNews();
-      </script>
-      
       const newsContainer = document.getElementById('news-container');
       const filterButtons = document.querySelectorAll('.filter-btn');
 
-      async function fetchNueraxNews(filter = '') {
-  try {
-    const companyQuery = filter || 'ai';
-    const res = await fetch(`/api/news?company=${encodeURIComponent(companyQuery)}`);
-    const articles = await res.json();
-
-    console.log('🧪 Articles from API:', articles);
-
-    newsContainer.innerHTML = '';
-
-    if (!articles.length) {
-      newsContainer.innerHTML = '<p class="text-[#A1A6AD]">No news articles found.</p>';
-      return;
-    }
-
-    articles.forEach(article => {
-      const timeAgo = getHoursAgo(article.publishedAt);
-
-      const card = document.createElement('div');
-      card.className = 'bg-[#2A2D31] p-5 rounded-xl mb-6 shadow hover:shadow-cyan-500/10 transition';
-
-      card.innerHTML = `
-        <p class="text-sm text-[#A1A6AD] mb-1">${timeAgo} • ${article.source.name}</p>
-        <h3 class="text-lg font-medium text-[#F5F7FA] mb-2">${article.title}</h3>
-        <p class="text-[#A1A6AD] text-sm mb-2">${article.description || ''}</p>
-        <a href="${article.url}" target="_blank" class="text-[#00FFFF] text-sm underline">Read full article →</a>
-      `;
-
-      newsContainer.appendChild(card);
-    });
-  } catch (err) {
-    console.error('❌ Error fetching news:', err);
-    newsContainer.innerHTML = '<p class="text-red-500">Failed to load news. Try again later.</p>';
-  }
-}
-
-
       function getHoursAgo(dateString) {
         const hours = Math.floor((Date.now() - new Date(dateString)) / (1000 * 60 * 60));
-        return hours < 1 ? 'Just now'
+        return hours < 1 ? 'Just now' : `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+      }
+
+      async function fetchNueraxNews(filter = '') {
+        try {
+          const companyQuery = filter || 'ai';
+          const res = await fetch(`/api/news?company=${encodeURIComponent(companyQuery)}`);
+          const articles = await res.json();
+
+          console.log('🧪 Articles from API:', articles);
+
+          newsContainer.innerHTML = '';
+
+          if (!articles.length) {
+            newsContainer.innerHTML = '<p class="text-[#A1A6AD]">No news articles found.</p>';
+            return;
+          }
+
+          articles.forEach(article => {
+            const timeAgo = getHoursAgo(article.publishedAt);
+
+            const card = document.createElement('div');
+            card.className = 'bg-[#2A2D31] p-5 rounded-xl mb-6 shadow hover:shadow-cyan-500/10 transition';
+
+            card.innerHTML = `
+              <p class="text-sm text-[#A1A6AD] mb-1">${timeAgo} • ${article.source.name}</p>
+              <h3 class="text-lg font-medium text-[#F5F7FA] mb-2">${article.title}</h3>
+              <p class="text-[#A1A6AD] text-sm mb-2">${article.description || ''}</p>
+              <a href="${article.url}" target="_blank" class="text-[#00FFFF] text-sm underline">Read full article →</a>
+            `;
+
+            newsContainer.appendChild(card);
+          });
+        } catch (err) {
+          console.error('❌ Error fetching news:', err);
+          newsContainer.innerHTML = '<p class="text-red-500">Failed to load news. Try again later.</p>';
+        }
+      }
+
+      // Filter button click events
+      filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const company = button.getAttribute('data-company');
+          fetchNueraxNews(company);
+        });
+      });
+
+      // Load default on first load
+      fetchNueraxNews();
+    </script>
+  </body>
+</html>
