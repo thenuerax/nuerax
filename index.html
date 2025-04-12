@@ -21,7 +21,7 @@
   </head>
   <body class="font-sans leading-relaxed text-base antialiased">
 
-    <!-- Hero Section -->
+    <!-- Hero -->
     <section class="flex flex-col items-center text-center mt-24 px-4 fade-in">
       <h1 class="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
         The future is moving fast. <br />So are we.
@@ -50,7 +50,7 @@
       </div>
     </section>
 
-    <!-- Nuerax Pro Teaser -->
+    <!-- Pro Teaser -->
     <section class="mt-32 mb-20 px-6 fade-in">
       <div class="backdrop-blur-md bg-white/5 border border-white/10 p-8 rounded-2xl shadow-md text-center max-w-xl mx-auto">
         <h3 class="text-2xl font-semibold mb-2">🔒 Nuerax Pro (Coming Soon)</h3>
@@ -78,20 +78,27 @@
         const title = article.title.toLowerCase();
 
         if (source.includes('openai') || title.includes('openai')) {
-          return 'https://img.icons8.com/ios-filled/100/openai.png';
+          return 'https://upload.wikimedia.org/wikipedia/commons/0/04/OpenAI_Logo.svg';
         } else if (source.includes('meta') || title.includes('meta')) {
-          return 'https://img.icons8.com/ios-filled/100/meta.png';
+          return 'https://upload.wikimedia.org/wikipedia/commons/0/05/Meta_Platforms_Logo.svg';
         } else if (source.includes('google') || title.includes('google')) {
-          return 'https://img.icons8.com/color/96/google-logo.png';
+          return 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg';
         } else if (source.includes('nvidia') || title.includes('nvidia')) {
-          return 'https://img.icons8.com/ios-filled/100/nvidia.png';
+          return 'https://upload.wikimedia.org/wikipedia/en/2/21/Nvidia_logo.svg';
         } else if (source.includes('microsoft') || title.includes('microsoft')) {
-          return 'https://img.icons8.com/fluency/96/microsoft.png';
+          return 'https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg';
         } else if (source.includes('amazon') || title.includes('amazon')) {
-          return 'https://img.icons8.com/ios-filled/100/amazon.png';
+          return 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg';
         }
 
-        return 'https://img.icons8.com/ios-filled/50/artificial-intelligence.png'; // default AI icon
+        return 'https://img.icons8.com/ios-filled/50/artificial-intelligence.png'; // fallback
+      }
+
+      function isAIArticle(article) {
+        const keywords = ['ai', 'artificial intelligence', 'openai', 'robot', 'machine learning', 'deep learning'];
+        const combined = `${article.title} ${article.description}`.toLowerCase();
+
+        return keywords.some(keyword => combined.includes(keyword));
       }
 
       async function fetchNueraxNews(filter = '') {
@@ -100,16 +107,16 @@
           const res = await fetch(`/api/news?company=${encodeURIComponent(companyQuery)}`);
           const articles = await res.json();
 
-          console.log('🧪 Articles from API:', articles);
+          const aiArticles = articles.filter(isAIArticle);
 
           newsContainer.innerHTML = '';
 
-          if (!articles.length) {
-            newsContainer.innerHTML = '<p class="text-[#A1A6AD]">No news articles found.</p>';
+          if (!aiArticles.length) {
+            newsContainer.innerHTML = '<p class="text-[#A1A6AD]">No relevant AI articles found.</p>';
             return;
           }
 
-          articles.forEach(article => {
+          aiArticles.forEach(article => {
             const timeAgo = getHoursAgo(article.publishedAt);
             const logoUrl = getCompanyLogo(article);
 
