@@ -41,41 +41,41 @@
       const filterButtons = document.querySelectorAll('.filter-btn');
 
       async function fetchNueraxNews(filter = '') {
-        try {
-            const res = await fetch(`/api/news?company=${encodeURIComponent(filter)}`);
-          const articles = await res.json();
+  try {
+    const companyQuery = filter || 'ai';
+    const res = await fetch(`/api/news?company=${encodeURIComponent(companyQuery)}`);
+    const articles = await res.json();
 
-          newsContainer.innerHTML = '';
+    console.log('🧪 Articles from API:', articles);
 
-          const filtered = filter
-            ? articles.filter(article => article.title.toLowerCase().includes(filter.toLowerCase()))
-            : articles;
+    newsContainer.innerHTML = '';
 
-          if (!filtered.length) {
-            newsContainer.innerHTML = '<p class="text-[#A1A6AD]">No news articles found.</p>';
-            return;
-          }
+    if (!articles.length) {
+      newsContainer.innerHTML = '<p class="text-[#A1A6AD]">No news articles found.</p>';
+      return;
+    }
 
-          filtered.forEach(article => {
-            const timeAgo = getHoursAgo(article.publishedAt);
+    articles.forEach(article => {
+      const timeAgo = getHoursAgo(article.publishedAt);
 
-            const card = document.createElement('div');
-            card.className = 'bg-[#2A2D31] p-5 rounded-xl mb-6 shadow hover:shadow-cyan-500/10 transition';
+      const card = document.createElement('div');
+      card.className = 'bg-[#2A2D31] p-5 rounded-xl mb-6 shadow hover:shadow-cyan-500/10 transition';
 
-            card.innerHTML = `
-              <p class="text-sm text-[#A1A6AD] mb-1">${timeAgo} • ${article.source.name}</p>
-              <h3 class="text-lg font-medium text-[#F5F7FA] mb-2">${article.title}</h3>
-              <p class="text-[#A1A6AD] text-sm mb-2">${article.description || ''}</p>
-              <a href="${article.url}" target="_blank" class="text-[#00FFFF] text-sm underline">Read full article →</a>
-            `;
+      card.innerHTML = `
+        <p class="text-sm text-[#A1A6AD] mb-1">${timeAgo} • ${article.source.name}</p>
+        <h3 class="text-lg font-medium text-[#F5F7FA] mb-2">${article.title}</h3>
+        <p class="text-[#A1A6AD] text-sm mb-2">${article.description || ''}</p>
+        <a href="${article.url}" target="_blank" class="text-[#00FFFF] text-sm underline">Read full article →</a>
+      `;
 
-            newsContainer.appendChild(card);
-          });
-        } catch (err) {
-          console.error('❌ Error:', err);
-          newsContainer.innerHTML = '<p class="text-red-500">Failed to load news.</p>';
-        }
-      }
+      newsContainer.appendChild(card);
+    });
+  } catch (err) {
+    console.error('❌ Error fetching news:', err);
+    newsContainer.innerHTML = '<p class="text-red-500">Failed to load news. Try again later.</p>';
+  }
+}
+
 
       function getHoursAgo(dateString) {
         const hours = Math.floor((Date.now() - new Date(dateString)) / (1000 * 60 * 60));
