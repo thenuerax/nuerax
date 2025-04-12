@@ -83,10 +83,12 @@
   
     async function fetchNueraxNews() {
       try {
-        const res = await fetch('/api/news'); // calling your serverless function
+        const res = await fetch('/api/news'); // calling your backend
         const articles = await res.json();
   
-        newsContainer.innerHTML = ''; // clear loading
+        console.log('🔍 Articles from API:', articles); // You can keep this for testing
+  
+        newsContainer.innerHTML = ''; // remove loading
   
         if (!articles.length) {
           newsContainer.innerHTML = '<p class="text-[#A1A6AD]">No news articles found.</p>';
@@ -114,6 +116,7 @@
   
     fetchNueraxNews();
   </script>
+  
   
 
   </body>
