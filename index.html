@@ -44,7 +44,7 @@
     </div>
 
     <!-- News Feed -->
-    <section id="feed" class="w-full max-w-3xl mx-auto px-4 fade-in">
+    <section id="feed" class="w-full max-w-5xl mx-auto px-4 fade-in">
       <div id="news-container">
         <p class="text-[#A1A6AD]">Loading news...</p>
       </div>
@@ -74,26 +74,25 @@
       }
 
       function getCompanyLogo(article) {
-  const source = article.source.name.toLowerCase();
-  const title = article.title.toLowerCase();
+        const source = article.source.name.toLowerCase();
+        const title = article.title.toLowerCase();
 
-  if (source.includes('openai') || title.includes('openai')) {
-    return 'https://img.icons8.com/ios-filled/50/openai.png';
-  } else if (source.includes('meta') || title.includes('meta')) {
-    return 'https://img.icons8.com/ios-filled/50/meta.png';
-  } else if (source.includes('google') || title.includes('google')) {
-    return 'https://img.icons8.com/color/48/google-logo.png';
-  } else if (source.includes('nvidia') || title.includes('nvidia')) {
-    return 'https://img.icons8.com/ios-filled/50/nvidia.png';
-  } else if (source.includes('microsoft') || title.includes('microsoft')) {
-    return 'https://img.icons8.com/fluency/48/microsoft.png';
-  } else if (source.includes('amazon') || title.includes('amazon')) {
-    return 'https://img.icons8.com/ios-filled/50/amazon.png';
-  }
+        if (source.includes('openai') || title.includes('openai')) {
+          return 'https://img.icons8.com/ios-filled/100/openai.png';
+        } else if (source.includes('meta') || title.includes('meta')) {
+          return 'https://img.icons8.com/ios-filled/100/meta.png';
+        } else if (source.includes('google') || title.includes('google')) {
+          return 'https://img.icons8.com/color/96/google-logo.png';
+        } else if (source.includes('nvidia') || title.includes('nvidia')) {
+          return 'https://img.icons8.com/ios-filled/100/nvidia.png';
+        } else if (source.includes('microsoft') || title.includes('microsoft')) {
+          return 'https://img.icons8.com/fluency/96/microsoft.png';
+        } else if (source.includes('amazon') || title.includes('amazon')) {
+          return 'https://img.icons8.com/ios-filled/100/amazon.png';
+        }
 
-  return null;
-}
-
+        return 'https://img.icons8.com/ios-filled/50/artificial-intelligence.png'; // default AI icon
+      }
 
       async function fetchNueraxNews(filter = '') {
         try {
@@ -115,16 +114,18 @@
             const logoUrl = getCompanyLogo(article);
 
             const card = document.createElement('div');
-            card.className = 'bg-[#1A1D21] p-5 rounded-xl mb-6 shadow-lg hover:shadow-cyan-500/10 transform transition hover:-translate-y-1';
+            card.className = 'flex bg-[#1A1D21] rounded-xl overflow-hidden mb-6 shadow-lg hover:shadow-cyan-500/10 transition';
 
             card.innerHTML = `
-              <div class="flex items-center gap-2 mb-1 text-sm text-[#A1A6AD]">
-                <span>${timeAgo}</span> • <span>${article.source.name}</span>
-                ${logoUrl ? `<img src="${logoUrl}" alt="${article.source.name}" class="w-4 h-4 rounded-full">` : ''}
+              <div class="flex-shrink-0 bg-[#0F1115] p-4 flex items-center justify-center w-32 h-32">
+                <img src="${logoUrl}" alt="logo" class="max-h-16 max-w-16 object-contain" />
               </div>
-              <h3 class="text-lg font-medium text-[#F5F7FA] mb-2">${article.title}</h3>
-              <p class="text-[#A1A6AD] text-sm mb-2">${article.description || ''}</p>
-              <a href="${article.url}" target="_blank" class="text-[#00FFFF] text-sm underline">Read full article →</a>
+              <div class="p-5 flex flex-col justify-between">
+                <div class="text-sm text-[#A1A6AD] mb-1">${timeAgo} • ${article.source.name}</div>
+                <h3 class="text-lg font-semibold text-[#F5F7FA] mb-2">${article.title}</h3>
+                <p class="text-[#A1A6AD] text-sm mb-3">${article.description || ''}</p>
+                <a href="${article.url}" target="_blank" class="text-[#00FFFF] text-sm underline">Read full article →</a>
+              </div>
             `;
 
             newsContainer.appendChild(card);
