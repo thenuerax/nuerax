@@ -83,12 +83,12 @@
   
     async function fetchNueraxNews() {
       try {
-        const res = await fetch('/api/news'); // calling your backend
+        const res = await fetch('/api/news'); // ✅ Now using your own API
         const articles = await res.json();
   
-        console.log('🔍 Articles from API:', articles); // You can keep this for testing
+        console.log('🧪 API Response:', articles); // ✅ Works
   
-        newsContainer.innerHTML = ''; // remove loading
+        newsContainer.innerHTML = ''; // clear "Loading..."
   
         if (!articles.length) {
           newsContainer.innerHTML = '<p class="text-[#A1A6AD]">No news articles found.</p>';
@@ -109,13 +109,14 @@
           newsContainer.appendChild(card);
         });
       } catch (err) {
-        newsContainer.innerHTML = '<p class="text-red-500">Failed to load news. Try again later.</p>';
         console.error(err);
+        newsContainer.innerHTML = '<p class="text-red-500">Failed to load news. Try again later.</p>';
       }
     }
   
     fetchNueraxNews();
   </script>
+  
   
   
 
