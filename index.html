@@ -74,25 +74,26 @@
       }
 
       function getCompanyLogo(article) {
-        const source = article.source.name.toLowerCase();
-        const title = article.title.toLowerCase();
+  const source = article.source.name.toLowerCase();
+  const title = article.title.toLowerCase();
 
-        if (source.includes('openai') || title.includes('openai')) {
-          return 'https://upload.wikimedia.org/wikipedia/commons/0/04/OpenAI_Logo.svg';
-        } else if (source.includes('meta') || title.includes('meta')) {
-          return 'https://upload.wikimedia.org/wikipedia/commons/0/05/Meta_Platforms_Logo.svg';
-        } else if (source.includes('google') || title.includes('google')) {
-          return 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg';
-        } else if (source.includes('nvidia') || title.includes('nvidia')) {
-          return 'https://upload.wikimedia.org/wikipedia/en/2/21/Nvidia_logo.svg';
-        } else if (source.includes('microsoft') || title.includes('microsoft')) {
-          return 'https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg';
-        } else if (source.includes('amazon') || title.includes('amazon')) {
-          return 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg';
-        }
+  if (source.includes('openai') || title.includes('openai')) {
+    return 'https://img.icons8.com/ios-filled/50/openai.png';
+  } else if (source.includes('meta') || title.includes('meta')) {
+    return 'https://img.icons8.com/ios-filled/50/meta.png';
+  } else if (source.includes('google') || title.includes('google')) {
+    return 'https://img.icons8.com/color/48/google-logo.png';
+  } else if (source.includes('nvidia') || title.includes('nvidia')) {
+    return 'https://img.icons8.com/ios-filled/50/nvidia.png';
+  } else if (source.includes('microsoft') || title.includes('microsoft')) {
+    return 'https://img.icons8.com/fluency/48/microsoft.png';
+  } else if (source.includes('amazon') || title.includes('amazon')) {
+    return 'https://img.icons8.com/ios-filled/50/amazon.png';
+  }
 
-        return null;
-      }
+  return null;
+}
+
 
       async function fetchNueraxNews(filter = '') {
         try {
