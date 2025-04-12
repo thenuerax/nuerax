@@ -1,41 +1,69 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-[#1C1F22] text-[#F5F7FA]">
+<html lang="en" class="bg-[#0F1115] text-[#F5F7FA] scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nuerax — Real-Time AI News</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .fade-in {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeIn 1s ease forwards;
+      }
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
   </head>
-  <body class="flex flex-col items-center justify-center px-6 min-h-screen">
+  <body class="font-sans leading-relaxed text-base antialiased">
 
     <!-- Hero Section -->
-    <h1 class="text-4xl font-bold text-center mt-12 mb-4">
-      The future is moving fast.<br />So are we.
-    </h1>
-    <p class="text-[#A1A6AD] text-center mb-8 max-w-xl">
-      Real-time AI news, insights, and stock market impact — curated for the next generation.
-    </p>
-    <a href="#feed" class="bg-[#00FFFF] text-black font-medium px-6 py-3 rounded-xl shadow hover:shadow-cyan-500/40 transition">
-      Start Exploring →
-    </a>
+    <section class="flex flex-col items-center text-center mt-24 px-4 fade-in">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4 tracking-tight">
+        The future is moving fast. <br />So are we.
+      </h1>
+      <p class="text-[#A1A6AD] max-w-xl mb-8">
+        Real-time AI news, insights, and stock market impact — curated for the next generation.
+      </p>
+      <a href="#feed" class="bg-[#00FFFF] text-black font-medium px-6 py-3 rounded-xl shadow hover:shadow-cyan-500/40 transition">
+        Start Exploring →
+      </a>
+    </section>
 
     <!-- Filter Bar -->
-    <div class="mt-16 mb-6 flex flex-wrap justify-center gap-3">
-      <button class="filter-btn px-4 py-2 rounded-lg bg-[#2A2D31] hover:bg-[#00FFFF] hover:text-black transition" data-company="">All</button>
-      <button class="filter-btn px-4 py-2 rounded-lg bg-[#2A2D31] hover:bg-[#00FFFF] hover:text-black transition" data-company="OpenAI">OpenAI</button>
-      <button class="filter-btn px-4 py-2 rounded-lg bg-[#2A2D31] hover:bg-[#00FFFF] hover:text-black transition" data-company="Meta">Meta</button>
-      <button class="filter-btn px-4 py-2 rounded-lg bg-[#2A2D31] hover:bg-[#00FFFF] hover:text-black transition" data-company="Google">Google</button>
-      <button class="filter-btn px-4 py-2 rounded-lg bg-[#2A2D31] hover:bg-[#00FFFF] hover:text-black transition" data-company="Nvidia">Nvidia</button>
+    <div class="mt-24 mb-8 flex flex-wrap justify-center gap-3 fade-in">
+      <button class="filter-btn px-4 py-2 rounded-lg bg-[#1A1D21] hover:bg-[#00FFFF] hover:text-black transition" data-company="">All</button>
+      <button class="filter-btn px-4 py-2 rounded-lg bg-[#1A1D21] hover:bg-[#00FFFF] hover:text-black transition" data-company="OpenAI">OpenAI</button>
+      <button class="filter-btn px-4 py-2 rounded-lg bg-[#1A1D21] hover:bg-[#00FFFF] hover:text-black transition" data-company="Meta">Meta</button>
+      <button class="filter-btn px-4 py-2 rounded-lg bg-[#1A1D21] hover:bg-[#00FFFF] hover:text-black transition" data-company="Google">Google</button>
+      <button class="filter-btn px-4 py-2 rounded-lg bg-[#1A1D21] hover:bg-[#00FFFF] hover:text-black transition" data-company="Nvidia">Nvidia</button>
     </div>
 
-    <!-- News Feed Section -->
-    <section id="feed" class="w-full max-w-3xl mt-6 px-4 mx-auto">
+    <!-- News Feed -->
+    <section id="feed" class="w-full max-w-3xl mx-auto px-4 fade-in">
       <div id="news-container">
         <p class="text-[#A1A6AD]">Loading news...</p>
       </div>
     </section>
 
-    <!-- Script -->
+    <!-- Nuerax Pro Teaser -->
+    <section class="mt-32 mb-20 px-6 fade-in">
+      <div class="backdrop-blur-md bg-white/5 border border-white/10 p-8 rounded-2xl shadow-md text-center max-w-xl mx-auto">
+        <h3 class="text-2xl font-semibold mb-2">🔒 Nuerax Pro (Coming Soon)</h3>
+        <p class="text-[#A1A6AD] mb-4">
+          Deeper insights, market analysis, and AI-stock impact breakdowns — for members only.
+        </p>
+        <button class="bg-[#00FFFF] text-black font-semibold px-6 py-2 rounded-lg hover:scale-105 transition">
+          Join Waitlist
+        </button>
+      </div>
+    </section>
+
+    <!-- JavaScript -->
     <script>
       const newsContainer = document.getElementById('news-container');
       const filterButtons = document.querySelectorAll('.filter-btn');
@@ -64,7 +92,7 @@
             const timeAgo = getHoursAgo(article.publishedAt);
 
             const card = document.createElement('div');
-            card.className = 'bg-[#2A2D31] p-5 rounded-xl mb-6 shadow hover:shadow-cyan-500/10 transition';
+            card.className = 'bg-[#1A1D21] p-5 rounded-xl mb-6 shadow-lg hover:shadow-cyan-500/10 transform transition hover:-translate-y-1';
 
             card.innerHTML = `
               <p class="text-sm text-[#A1A6AD] mb-1">${timeAgo} • ${article.source.name}</p>
@@ -81,7 +109,7 @@
         }
       }
 
-      // Filter button click events
+      // Filter events
       filterButtons.forEach(button => {
         button.addEventListener('click', () => {
           const company = button.getAttribute('data-company');
@@ -89,8 +117,7 @@
         });
       });
 
-      // Load default on first load
-      fetchNueraxNews();
+      fetchNueraxNews(); // initial load
     </script>
   </body>
 </html>
