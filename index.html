@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nuerax — Real-Time AI News</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.9.3/tsparticles.bundle.min.js"></script>
     <style>
       body {
@@ -29,6 +30,25 @@
 
     <!-- Particle Background -->
     <div id="tsparticles" class="fixed top-0 left-0 w-full h-full z-0 pointer-events-none"></div>
+
+    <!-- Top Right Login/Logout -->
+    <div class="fixed top-4 right-6 z-50">
+      <span id="welcomeText" class="mr-4 hidden text-sm text-cyan-400"></span>
+      <button id="authButton" class="bg-[#00FFFF] text-black px-4 py-2 rounded-lg font-semibold shadow hover:scale-105 transition">
+        Log in
+      </button>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="fixed z-50 inset-0 bg-black/70 flex items-center justify-center hidden">
+      <div class="bg-[#1A1D21] p-8 rounded-xl w-full max-w-sm shadow-xl relative">
+        <h2 class="text-xl font-semibold mb-4">Login or Sign Up</h2>
+        <input id="emailInput" type="email" placeholder="Email" class="w-full mb-3 p-2 rounded bg-[#2A2D31] text-white placeholder-[#aaa]">
+        <input id="passwordInput" type="password" placeholder="Password" class="w-full mb-4 p-2 rounded bg-[#2A2D31] text-white placeholder-[#aaa]">
+        <button id="submitAuth" class="w-full bg-[#00FFFF] text-black py-2 rounded font-semibold">Submit</button>
+        <button id="closeModal" class="absolute top-2 right-3 text-white">&times;</button>
+      </div>
+    </div>
 
     <!-- Hero Section -->
     <section class="relative z-10 flex flex-col items-center text-center mt-24 px-4 fade-in">
@@ -58,6 +78,57 @@
 
     <!-- Script -->
     <script>
+      const supabase = createClient(
+        'https://qiiozzvsfpnhoxaamftf.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpaW96enZzZnBuaG94YWFtZnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ2NTYzNzMsImV4cCI6MjA2MDIzMjM3M30.yp8z9dWlQV4cmHrU4tLyT7x90_Sl_qvuQM1jokSP7Qw'
+      );
+
+      // Auth Modal Logic
+      const authModal = document.getElementById('authModal');
+      const authButton = document.getElementById('authButton');
+      const welcomeText = document.getElementById('welcomeText');
+      const closeModal = document.getElementById('closeModal');
+
+      authButton.addEventListener('click', () => {
+        if (authButton.innerText === 'Log out') {
+          supabase.auth.signOut();
+          authButton.innerText = 'Log in';
+          welcomeText.innerText = '';
+          welcomeText.classList.add('hidden');
+        } else {
+          authModal.classList.remove('hidden');
+        }
+      });
+
+      closeModal.onclick = () => authModal.classList.add('hidden');
+
+      document.getElementById('submitAuth').onclick = async () => {
+        const email = document.getElementById('emailInput').value;
+        const password = document.getElementById('passwordInput').value;
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+        if (error) {
+          // If login fails, try sign up
+          const { error: signupError } = await supabase.auth.signUp({ email, password });
+          if (signupError) alert('Login/Signup failed');
+        } else {
+          authModal.classList.add('hidden');
+          checkSession();
+        }
+      };
+
+      async function checkSession() {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          authButton.innerText = 'Log out';
+          welcomeText.innerText = `Welcome, ${session.user.email}`;
+          welcomeText.classList.remove('hidden');
+        }
+      }
+
+      checkSession();
+
+      // Particle background
       tsParticles.load("tsparticles", {
         fullScreen: { enable: false },
         particles: {
@@ -71,83 +142,7 @@
         background: { color: "#0F1115" }
       });
 
-      const newsContainer = document.getElementById('news-container');
-      const searchInput = document.getElementById('searchInput');
-
-      const logoMap = {
-        openai: 'https://upload.wikimedia.org/wikipedia/commons/0/04/OpenAI_Logo.svg',
-        meta: 'https://upload.wikimedia.org/wikipedia/commons/0/05/Meta_Platforms_Logo.svg',
-        google: 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg',
-        nvidia: 'https://upload.wikimedia.org/wikipedia/en/2/21/Nvidia_logo.svg',
-        microsoft: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg',
-        tesla: 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Tesla_logo.png',
-        apple: 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg',
-        anthropic: 'https://upload.wikimedia.org/wikipedia/commons/f/f0/Anthropic_logo.png',
-        palantir: 'https://upload.wikimedia.org/wikipedia/commons/3/38/Palantir_Technologies_logo.png'
-      };
-
-      function getHoursAgo(dateString) {
-        const hours = Math.floor((Date.now() - new Date(dateString)) / (1000 * 60 * 60));
-        return hours < 1 ? 'Just now' : `${hours} hour${hours !== 1 ? 's' : ''} ago`;
-      }
-
-      function getLogo(company) {
-        const name = company.toLowerCase();
-        return logoMap[name] || 'https://img.icons8.com/ios-filled/50/artificial-intelligence.png';
-      }
-
-      function isAIArticle(article) {
-        const keywords = ['ai', 'artificial intelligence', 'openai', 'robot', 'machine learning', 'deep learning'];
-        const combined = `${article.title} ${article.description}`.toLowerCase();
-        return keywords.some(keyword => combined.includes(keyword));
-      }
-
-      async function fetchNueraxNews(query = 'ai') {
-        try {
-          const res = await fetch(`/api/news?company=${encodeURIComponent(query)}`);
-          const articles = await res.json();
-
-          const filtered = articles.filter(isAIArticle);
-          newsContainer.innerHTML = '';
-
-          if (!filtered.length) {
-            newsContainer.innerHTML = '<p class="text-[#A1A6AD]">No relevant AI articles found.</p>';
-            return;
-          }
-
-          filtered.forEach(article => {
-            const timeAgo = getHoursAgo(article.publishedAt);
-            const logoUrl = getLogo(query);
-
-            const card = document.createElement('div');
-            card.className = 'flex bg-[#1A1D21] rounded-xl overflow-hidden mb-6 shadow-lg hover:shadow-cyan-500/10 transition hover:-translate-y-1 transform duration-300';
-
-            card.innerHTML = `
-              <div class="flex-shrink-0 bg-[#0F1115] p-4 flex items-center justify-center w-32 h-32">
-                <img src="${logoUrl}" alt="logo" class="max-h-16 max-w-16 object-contain" />
-              </div>
-              <div class="p-5 flex flex-col justify-between">
-                <div class="text-sm text-[#A1A6AD] mb-1">${timeAgo} • ${article.source.name}</div>
-                <h3 class="text-lg font-semibold text-[#F5F7FA] mb-2">${article.title}</h3>
-                <p class="text-[#A1A6AD] text-sm mb-3">${article.description || ''}</p>
-                <a href="${article.url}" target="_blank" class="text-[#00FFFF] text-sm underline">Read full article →</a>
-              </div>
-            `;
-
-            newsContainer.appendChild(card);
-          });
-        } catch (err) {
-          console.error('❌ Error fetching news:', err);
-          newsContainer.innerHTML = '<p class="text-red-500">Failed to load news. Try again later.</p>';
-        }
-      }
-
-      searchInput.addEventListener('input', () => {
-        const value = searchInput.value.trim();
-        fetchNueraxNews(value || 'ai');
-      });
-
-      fetchNueraxNews();
+      // Your existing search + news fetch can go below here
     </script>
   </body>
 </html>
