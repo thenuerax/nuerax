@@ -6,6 +6,7 @@
     <title>Nuerax — Real-Time AI News</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
       body {
         background-color: #0F1115;
@@ -30,8 +31,16 @@
     <!-- Particle Background -->
     <div id="tsparticles" class="fixed top-0 left-0 w-full h-full z-0 pointer-events-none"></div>
 
-    <!-- Hero Section -->
-    <section class="relative z-10 flex flex-col items-center text-center mt-24 px-4 fade-in">
+    <!-- Header/Nav -->
+    <div class="flex justify-between items-center px-6 py-4 relative z-10">
+      <h1 class="text-xl font-bold">Nuerax</h1>
+      <button id="loginBtn" class="text-[#00FFFF] border border-[#00FFFF] px-4 py-1 rounded hover:bg-[#00FFFF] hover:text-black transition">
+        Log In
+      </button>
+    </div>
+
+    <!-- Hero -->
+    <section class="relative z-10 flex flex-col items-center text-center mt-12 px-4 fade-in">
       <h1 class="text-5xl font-bold mb-4 tracking-tight bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-pink-500 bg-clip-text text-transparent">
         The future is moving fast.<br />So are we.
       </h1>
@@ -43,127 +52,174 @@
       </a>
     </section>
 
-    <!-- Search Bar -->
+    <!-- Search -->
     <div class="relative z-10 mt-20 mb-10 px-6 fade-in flex justify-center">
       <input id="searchInput" type="text" placeholder="Search company (e.g. OpenAI)"
         class="w-full max-w-xl bg-[#1A1D21]/70 backdrop-blur-lg text-white placeholder-[#A1A6AD] px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400 transition shadow-lg">
     </div>
 
-    <!-- News Feed -->
+    <!-- News -->
     <section id="feed" class="relative z-10 w-full max-w-5xl mx-auto px-4 fade-in">
       <div id="news-container">
         <p class="text-[#A1A6AD]">Loading news...</p>
       </div>
     </section>
 
-    <!-- Particle Script -->
+    <!-- Login Modal -->
+    <div id="loginModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+      <div class="bg-[#1A1D21] p-6 rounded-xl w-full max-w-sm shadow-lg">
+        <h2 class="text-lg font-semibold mb-4">Log in or Sign up</h2>
+        <input id="emailInput" type="email" placeholder="Email" class="w-full mb-3 px-4 py-2 rounded bg-[#0F1115] text-white" />
+        <input id="passwordInput" type="password" placeholder="Password" class="w-full mb-4 px-4 py-2 rounded bg-[#0F1115] text-white" />
+        <button id="submitLogin" class="w-full bg-[#00FFFF] text-black font-medium px-4 py-2 rounded hover:opacity-90">Continue</button>
+        <button id="closeModal" class="w-full mt-3 text-sm text-gray-400 hover:underline">Cancel</button>
+      </div>
+    </div>
+    <!-- Scripts -->
     <script>
-      tsParticles.load("tsparticles", {
-        fullScreen: { enable: false },
-        background: { color: "#0F1115" },
-        particles: {
-          number: { value: 50, density: { enable: true, value_area: 800 } },
-          color: { value: "#00FFFF" },
-          shape: { type: "circle" },
-          opacity: { value: 0.3 },
-          size: { value: 2 },
-          links: {
-            enable: true,
-            distance: 130,
-            color: "#00FFFF",
-            opacity: 0.2,
-            width: 1
-          },
-          move: {
-            enable: true,
-            speed: 0.5,
-            direction: "none",
-            outModes: { default: "bounce" }
+        const supabase = supabase.createClient(
+          "https://qiiozzvsfpnhoxaamftf.supabase.co",
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpaW96enZzZnBuaG94YWFtZnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ2NTYzNzMsImV4cCI6MjA2MDIzMjM3M30.yp8z9dWlQV4cmHrU4tLyT7x90_Sl_qvuQM1jokSP7Qw"
+        );
+  
+        const loginBtn = document.getElementById("loginBtn");
+        const loginModal = document.getElementById("loginModal");
+        const closeModal = document.getElementById("closeModal");
+        const submitLogin = document.getElementById("submitLogin");
+  
+        loginBtn.onclick = () => loginModal.classList.remove("hidden");
+        closeModal.onclick = () => loginModal.classList.add("hidden");
+  
+        submitLogin.onclick = async () => {
+          const email = document.getElementById("emailInput").value;
+          const password = document.getElementById("passwordInput").value;
+  
+          const { error } = await supabase.auth.signInWithPassword({ email, password });
+          if (error) {
+            const { error: signupError } = await supabase.auth.signUp({ email, password });
+            if (signupError) return alert("Login/Signup failed");
           }
-        },
-        interactivity: {
-          events: {
-            onHover: { enable: true, mode: "grab" },
-            resize: true
-          },
-          modes: {
-            grab: {
-              distance: 140,
-              links: { opacity: 0.3 }
-            }
+  
+          loginModal.classList.add("hidden");
+          loginBtn.textContent = "Log out";
+        };
+  
+        supabase.auth.getSession().then(({ data: { session } }) => {
+          if (session) {
+            loginBtn.textContent = "Log out";
+            loginBtn.onclick = async () => {
+              await supabase.auth.signOut();
+              location.reload();
+            };
           }
-        },
-        detectRetina: true
-      });
-    </script>
-
-    <!-- News Fetching Logic -->
-    <script>
-      const newsContainer = document.getElementById('news-container');
-      const searchInput = document.getElementById('searchInput');
-
-      const companyLogos = {
-        openai: "https://upload.wikimedia.org/wikipedia/commons/0/04/OpenAI_Logo.svg",
-        meta: "https://upload.wikimedia.org/wikipedia/commons/0/05/Meta_Platforms_Logo.svg",
-        google: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
-        nvidia: "https://upload.wikimedia.org/wikipedia/en/2/21/Nvidia_logo.svg",
-        microsoft: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
-        tesla: "https://upload.wikimedia.org/wikipedia/commons/b/bd/Tesla_Motors.svg",
-        apple: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
-        anthropic: "https://avatars.githubusercontent.com/u/110651149?s=200&v=4",
-        palantir: "https://upload.wikimedia.org/wikipedia/commons/6/68/Palantir_Technologies_logo.svg",
-      };
-
-      function getLogo(name) {
-        const key = name.toLowerCase();
-        return companyLogos[key] || companyLogos["openai"];
-      }
-
-      function getHoursAgo(dateString) {
-        const hours = Math.floor((Date.now() - new Date(dateString)) / (1000 * 60 * 60));
-        return hours < 1 ? "Just now" : `${hours} hour${hours !== 1 ? "s" : ""} ago`;
-      }
-
-      function isAIArticle(article) {
-        const keywords = ["ai", "artificial intelligence", "robot", "machine learning", "deep learning"];
-        const content = `${article.title} ${article.description}`.toLowerCase();
-        return keywords.some(k => content.includes(k));
-      }
-
-      async function fetchNews(query = "ai") {
-        const res = await fetch(`/api/news?company=${encodeURIComponent(query)}`);
-        const articles = await res.json();
-        const filtered = articles.filter(isAIArticle);
-        newsContainer.innerHTML = "";
-
-        filtered.forEach(article => {
-          const logoUrl = getLogo(query);
-          const timeAgo = getHoursAgo(article.publishedAt);
-          const card = document.createElement("div");
-          card.className = "flex bg-[#1A1D21] rounded-xl overflow-hidden mb-6 shadow-lg hover:shadow-cyan-500/10 transition";
-
-          card.innerHTML = `
-            <div class="flex-shrink-0 bg-[#0F1115] p-4 flex items-center justify-center w-32 h-32">
-              <img src="${logoUrl}" alt="logo" class="max-h-16 max-w-16 object-contain" />
-            </div>
-            <div class="p-5 flex flex-col justify-between">
-              <div class="text-sm text-[#A1A6AD] mb-1">${timeAgo} • ${article.source.name}</div>
-              <h3 class="text-lg font-semibold text-[#F5F7FA] mb-2">${article.title}</h3>
-              <p class="text-[#A1A6AD] text-sm mb-3">${article.description || ''}</p>
-              <a href="${article.url}" target="_blank" class="text-[#00FFFF] text-sm underline">Read full article →</a>
-            </div>
-          `;
-
-          newsContainer.appendChild(card);
         });
-      }
-
-      searchInput.addEventListener("input", (e) => {
-        const query = e.target.value.trim();
-        fetchNews(query || "ai");
-      });
-
-      fetchNews();
-    </script>
-  </body>
-</html>
+  
+        // Particle Background
+        tsParticles.load("tsparticles", {
+          fullScreen: { enable: false },
+          background: { color: "#0F1115" },
+          particles: {
+            number: { value: 50, density: { enable: true, value_area: 800 } },
+            color: { value: "#00FFFF" },
+            shape: { type: "circle" },
+            opacity: { value: 0.3 },
+            size: { value: 2 },
+            links: {
+              enable: true,
+              distance: 130,
+              color: "#00FFFF",
+              opacity: 0.2,
+              width: 1
+            },
+            move: {
+              enable: true,
+              speed: 0.5,
+              direction: "none",
+              outModes: { default: "bounce" }
+            }
+          },
+          interactivity: {
+            events: {
+              onHover: { enable: true, mode: "grab" },
+              resize: true
+            },
+            modes: {
+              grab: {
+                distance: 140,
+                links: { opacity: 0.3 }
+              }
+            }
+          },
+          detectRetina: true
+        });
+  
+        // News Logic
+        const newsContainer = document.getElementById("news-container");
+        const searchInput = document.getElementById("searchInput");
+  
+        const companyLogos = {
+          openai: "https://upload.wikimedia.org/wikipedia/commons/0/04/OpenAI_Logo.svg",
+          meta: "https://upload.wikimedia.org/wikipedia/commons/0/05/Meta_Platforms_Logo.svg",
+          google: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
+          nvidia: "https://upload.wikimedia.org/wikipedia/en/2/21/Nvidia_logo.svg",
+          microsoft: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
+          tesla: "https://upload.wikimedia.org/wikipedia/commons/b/bd/Tesla_Motors.svg",
+          apple: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
+          anthropic: "https://avatars.githubusercontent.com/u/110651149?s=200&v=4",
+          palantir: "https://upload.wikimedia.org/wikipedia/commons/6/68/Palantir_Technologies_logo.svg"
+        };
+  
+        function getLogo(name) {
+          const key = name.toLowerCase();
+          return companyLogos[key] || companyLogos["openai"];
+        }
+  
+        function getHoursAgo(dateString) {
+          const hours = Math.floor((Date.now() - new Date(dateString)) / (1000 * 60 * 60));
+          return hours < 1 ? "Just now" : `${hours} hour${hours !== 1 ? "s" : ""} ago`;
+        }
+  
+        function isAIArticle(article) {
+          const keywords = ["ai", "artificial intelligence", "robot", "machine learning", "deep learning"];
+          const content = `${article.title} ${article.description}`.toLowerCase();
+          return keywords.some(k => content.includes(k));
+        }
+  
+        async function fetchNews(query = "ai") {
+          const res = await fetch(`/api/news?company=${encodeURIComponent(query)}`);
+          const articles = await res.json();
+          const filtered = articles.filter(isAIArticle);
+          newsContainer.innerHTML = "";
+  
+          filtered.forEach(article => {
+            const logoUrl = getLogo(query);
+            const timeAgo = getHoursAgo(article.publishedAt);
+            const card = document.createElement("div");
+            card.className = "flex bg-[#1A1D21] rounded-xl overflow-hidden mb-6 shadow-lg hover:shadow-cyan-500/10 transition";
+  
+            card.innerHTML = `
+              <div class="flex-shrink-0 bg-[#0F1115] p-4 flex items-center justify-center w-32 h-32">
+                <img src="${logoUrl}" alt="logo" class="max-h-16 max-w-16 object-contain" />
+              </div>
+              <div class="p-5 flex flex-col justify-between">
+                <div class="text-sm text-[#A1A6AD] mb-1">${timeAgo} • ${article.source.name}</div>
+                <h3 class="text-lg font-semibold text-[#F5F7FA] mb-2">${article.title}</h3>
+                <p class="text-[#A1A6AD] text-sm mb-3">${article.description || ''}</p>
+                <a href="${article.url}" target="_blank" class="text-[#00FFFF] text-sm underline">Read full article →</a>
+              </div>
+            `;
+  
+            newsContainer.appendChild(card);
+          });
+        }
+  
+        searchInput.addEventListener("input", (e) => {
+          const query = e.target.value.trim();
+          fetchNews(query || "ai");
+        });
+  
+        fetchNews();
+      </script>
+    </body>
+  </html>
+  
