@@ -33,31 +33,32 @@
     <!-- Header -->
     <div class="flex justify-between items-center px-6 py-4 relative z-10">
       <span class="text-2xl font-bold tracking-tight text-white">Nuerax</span>
-      <div class="flex items-center space-x-4">
-        <button id="searchBtn" class="text-white hover:text-cyan-400 transition">
-          🔍
-        </button>
-        <button id="loginBtn" class="text-[#00FFFF] border border-[#00FFFF] px-4 py-1 rounded hover:bg-[#00FFFF] hover:text-black transition">
-          Log In
-        </button>
-      </div>
+      <button id="loginBtn" class="text-[#00FFFF] border border-[#00FFFF] px-4 py-1 rounded hover:bg-[#00FFFF] hover:text-black transition">
+        Log In
+      </button>
     </div>
 
     <!-- Hero Section -->
     <section class="relative z-10 flex flex-col items-center text-center mt-24 px-4 fade-in">
-      <h1 class="text-5xl font-semibold mb-4 tracking-tight text-white">
-        Stay ahead of the curve<br />with real-time AI insight.
+      <h1 class="text-5xl font-bold mb-4 tracking-tight bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-pink-500 bg-clip-text text-transparent">
+        The future is moving fast.<br />So are we.
       </h1>
-      <p class="text-[#A1A6AD] max-w-xl mb-10">
-        Follow the latest breakthroughs and see how innovation shapes the future of tech and business.
+      <p class="text-[#A1A6AD] max-w-xl mb-8">
+        Real-time AI news, insights, and stock market impact — curated for the next generation.
       </p>
-      <a href="#feed" class="text-[#00FFFF] hover:underline font-medium text-base">
-        Explore the feed ↓
+      <a href="#feed" class="bg-gradient-to-br from-cyan-400 to-fuchsia-500 text-black font-medium px-6 py-3 rounded-xl shadow-lg hover:scale-105 transform transition duration-300">
+        Start Exploring →
       </a>
     </section>
 
+    <!-- Search Bar -->
+    <div class="relative z-10 mt-20 mb-10 px-6 fade-in flex justify-center">
+      <input id="searchInput" type="text" placeholder="Search company (e.g. OpenAI)"
+        class="w-full max-w-xl bg-[#1A1D21]/70 backdrop-blur-lg text-white placeholder-[#A1A6AD] px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400 transition shadow-lg">
+    </div>
+
     <!-- News Feed -->
-    <section id="feed" class="relative z-10 w-full max-w-5xl mx-auto px-4 fade-in mt-16">
+    <section id="feed" class="relative z-10 w-full max-w-5xl mx-auto px-4 fade-in">
       <div id="news-container">
         <p class="text-[#A1A6AD]">Loading news...</p>
       </div>
@@ -107,6 +108,7 @@
     <!-- News Logic -->
     <script>
       const newsContainer = document.getElementById('news-container');
+      const searchInput = document.getElementById('searchInput');
 
       const companyLogos = {
         openai: "https://upload.wikimedia.org/wikipedia/commons/0/04/OpenAI_Logo.svg",
@@ -164,9 +166,9 @@
         });
       }
 
-      document.getElementById("searchBtn").addEventListener("click", () => {
-        const query = prompt("Search company:");
-        if (query) fetchNews(query);
+      searchInput.addEventListener("input", (e) => {
+        const query = e.target.value.trim();
+        fetchNews(query || "ai");
       });
 
       fetchNews();
