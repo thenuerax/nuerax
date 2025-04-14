@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nuerax — Real-Time AI News</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.9.3/tsparticles.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
     <style>
       body {
         background-color: #0F1115;
@@ -25,7 +25,7 @@
       }
     </style>
   </head>
-  <body class="font-sans leading-relaxed text-base antialiased">
+  <body class="font-sans leading-relaxed text-base antialiased relative">
 
     <!-- Particle Background -->
     <div id="tsparticles" class="fixed top-0 left-0 w-full h-full z-0 pointer-events-none"></div>
@@ -62,17 +62,42 @@
         fullScreen: { enable: false },
         background: { color: "#0F1115" },
         particles: {
-          number: { value: 60 },
-          color: { value: "#00ffff" },
+          number: { value: 50, density: { enable: true, value_area: 800 } },
+          color: { value: "#00FFFF" },
           shape: { type: "circle" },
-          opacity: { value: 0.2 },
+          opacity: { value: 0.3 },
           size: { value: 2 },
-          move: { enable: true, speed: 0.3, direction: "none", out_mode: "bounce" },
+          links: {
+            enable: true,
+            distance: 130,
+            color: "#00FFFF",
+            opacity: 0.2,
+            width: 1
+          },
+          move: {
+            enable: true,
+            speed: 0.5,
+            direction: "none",
+            outModes: { default: "bounce" }
+          }
         },
+        interactivity: {
+          events: {
+            onHover: { enable: true, mode: "grab" },
+            resize: true
+          },
+          modes: {
+            grab: {
+              distance: 140,
+              links: { opacity: 0.3 }
+            }
+          }
+        },
+        detectRetina: true
       });
     </script>
 
-    <!-- News Logic -->
+    <!-- News Fetching Logic -->
     <script>
       const newsContainer = document.getElementById('news-container');
       const searchInput = document.getElementById('searchInput');
