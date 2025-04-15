@@ -13,6 +13,21 @@
                         radial-gradient(circle at 80% 40%, rgba(255, 0, 255, 0.05) 0%, transparent 70%);
     }
   </style>
+
+<style>
+    body {
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+    body.fade-in {
+      opacity: 1;
+    }
+    a.transition-link {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+  </style>
+  
 </head>
 <body class="font-sans leading-relaxed text-base antialiased">
 
@@ -149,5 +164,24 @@
 
     fetchNews();
   </script>
+
+<script>
+    // Fade-in on page load
+    document.addEventListener("DOMContentLoaded", () => {
+      document.body.classList.add("fade-in");
+    });
+  
+    // Smooth transition on link click
+    document.querySelectorAll("a.transition-link").forEach(link => {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        const href = this.getAttribute("href");
+        document.body.classList.remove("fade-in");
+        document.body.style.opacity = 0;
+        setTimeout(() => window.location.href = href, 300);
+      });
+    });
+  </script>
+  
 </body>
 </html>
