@@ -40,7 +40,7 @@
   <nav id="navbar" class="fixed top-0 left-0 w-full px-6 py-4 flex justify-between items-center z-50 bg-[#0F1115] bg-opacity-90 backdrop-blur-md border-b border-white/10 shadow-sm">
     <a href="index.html" class="transition-link text-2xl font-bold tracking-tight text-white">Nuerax</a>
     <div class="flex items-center space-x-4">
-      <img id="searchToggle" src="/mnt/data/A_2D_vector_graphic_of_a_magnifying_glass_icon_is_.png" alt="Search" class="w-6 h-6 cursor-pointer" />
+      <img id="searchToggle" src="https://i.postimg.cc/65hjs64x/magnify-icon-black.png" alt="Search" class="w-6 h-6 cursor-pointer" />
       <button id="loginBtn" class="text-[#00FFFF] border border-[#00FFFF] px-4 py-1 rounded hover:bg-[#00FFFF] hover:text-black transition">
         Log In
       </button>
@@ -49,8 +49,10 @@
 
   <!-- Search Dropdown -->
   <div id="searchDropdown" class="hidden-search fixed top-20 left-1/2 transform -translate-x-1/2 z-40 w-full max-w-xl px-6">
-    <input type="text" placeholder="Search Nuerax.xyz"
-      class="w-full bg-[#1A1D21] text-white placeholder-[#A1A6AD] px-5 py-4 rounded-xl border border-[#00FFFF]/20 focus:outline-none focus:ring-2 focus:ring-cyan-400 shadow-xl">
+    <form id="searchForm">
+      <input type="text" id="searchInput" placeholder="Search Nuerax.xyz"
+        class="w-full bg-[#1A1D21] text-white placeholder-[#A1A6AD] px-5 py-4 rounded-xl border border-[#00FFFF]/20 focus:outline-none focus:ring-2 focus:ring-cyan-400 shadow-xl">
+    </form>
   </div>
 
   <!-- Hero Section -->
@@ -138,6 +140,16 @@
     const searchDropdown = document.getElementById("searchDropdown");
     searchToggle.addEventListener("click", () => {
       searchDropdown.classList.toggle("hidden-search");
+    });
+
+    const searchForm = document.getElementById("searchForm");
+    const searchInput = document.getElementById("searchInput");
+    searchForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const query = searchInput.value.trim();
+      if (query) {
+        window.location.href = `explore.html?company=${encodeURIComponent(query)}`;
+      }
     });
   </script>
 
