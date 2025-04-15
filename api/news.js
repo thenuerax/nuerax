@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
-    const API_KEY = '7956104af18649c0ba2890e09354069a';
-    const company = req.query.company || 'ai'; // fallback if no filter
+    const API_KEY = '7956104af18649c0ba2890e09354069a'; // your actual key
+    const company = req.query.company || 'ai';
   
     try {
       const response = await fetch(
