@@ -23,9 +23,11 @@
     body.fade-in {
       opacity: 1;
     }
-    a.transition-link {
-      transition: all 0.3s ease;
-      cursor: pointer;
+    nav {
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hidden-search {
+      display: none;
     }
   </style>
 </head>
@@ -34,22 +36,25 @@
   <!-- Particle Background -->
   <div id="tsparticles" class="fixed top-0 left-0 w-full h-full z-0 pointer-events-none"></div>
 
-  <!-- Header -->
-  <div class="flex justify-between items-center px-6 py-4 relative z-10">
+  <!-- Fixed Nav Bar -->
+  <nav id="navbar" class="fixed top-0 left-0 w-full px-6 py-4 flex justify-between items-center z-50 bg-[#0F1115] bg-opacity-90 backdrop-blur-md border-b border-white/10 shadow-sm">
     <a href="index.html" class="transition-link text-2xl font-bold tracking-tight text-white">Nuerax</a>
-    <button id="loginBtn" class="text-[#00FFFF] border border-[#00FFFF] px-4 py-1 rounded hover:bg-[#00FFFF] hover:text-black transition">
-      Log In
-    </button>
-  </div>
+    <div class="flex items-center space-x-4">
+      <img id="searchToggle" src="/mnt/data/A_2D_vector_graphic_of_a_magnifying_glass_icon_is_.png" alt="Search" class="w-6 h-6 cursor-pointer" />
+      <button id="loginBtn" class="text-[#00FFFF] border border-[#00FFFF] px-4 py-1 rounded hover:bg-[#00FFFF] hover:text-black transition">
+        Log In
+      </button>
+    </div>
+  </nav>
 
-  <!-- Search Bar -->
-  <div class="relative z-10 mt-8 mb-10 px-6 fade-in flex justify-center">
-    <input id="searchInput" type="text" placeholder="Search company (e.g. OpenAI)"
-      class="w-full max-w-xl bg-[#1A1D21]/70 backdrop-blur-lg text-white placeholder-[#A1A6AD] px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-400 transition shadow-lg">
+  <!-- Search Dropdown -->
+  <div id="searchDropdown" class="hidden-search fixed top-20 left-1/2 transform -translate-x-1/2 z-40 w-full max-w-xl px-6">
+    <input type="text" placeholder="Search Nuerax.xyz"
+      class="w-full bg-[#1A1D21] text-white placeholder-[#A1A6AD] px-5 py-4 rounded-xl border border-[#00FFFF]/20 focus:outline-none focus:ring-2 focus:ring-cyan-400 shadow-xl">
   </div>
 
   <!-- News Feed -->
-  <section id="feed" class="relative z-10 w-full max-w-5xl mx-auto px-4 fade-in">
+  <section id="feed" class="relative z-10 w-full max-w-5xl mx-auto px-4 fade-in mt-40">
     <div id="news-container">
       <p class="text-[#A1A6AD]">Loading news...</p>
     </div>
@@ -96,7 +101,7 @@
     });
   </script>
 
-  <!-- Page Transition Script -->
+  <!-- UI Behavior -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       document.body.classList.add("fade-in");
@@ -111,12 +116,28 @@
         setTimeout(() => window.location.href = href, 300);
       });
     });
+
+    let lastScrollY = window.scrollY;
+    const navbar = document.getElementById("navbar");
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > lastScrollY) {
+        navbar.classList.add("opacity-60");
+      } else {
+        navbar.classList.remove("opacity-60");
+      }
+      lastScrollY = window.scrollY;
+    });
+
+    const searchToggle = document.getElementById("searchToggle");
+    const searchDropdown = document.getElementById("searchDropdown");
+    searchToggle.addEventListener("click", () => {
+      searchDropdown.classList.toggle("hidden-search");
+    });
   </script>
 
   <!-- News Fetch Logic -->
   <script>
     const newsContainer = document.getElementById('news-container');
-    const searchInput = document.getElementById('searchInput');
 
     const companyLogos = {
       openai: "https://upload.wikimedia.org/wikipedia/commons/0/04/OpenAI_Logo.svg",
@@ -173,11 +194,6 @@
         newsContainer.appendChild(card);
       });
     }
-
-    searchInput.addEventListener("input", (e) => {
-      const query = e.target.value.trim();
-      fetchNews(query || "ai");
-    });
 
     fetchNews();
   </script>
