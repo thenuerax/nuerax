@@ -7,27 +7,17 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
   <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+    }
     body {
+      opacity: 0;
       background-color: #0F1115;
       background-image: radial-gradient(circle at 20% 20%, rgba(0, 255, 255, 0.05) 0%, transparent 70%),
                         radial-gradient(circle at 80% 40%, rgba(255, 0, 255, 0.05) 0%, transparent 70%);
-    }
-    .fade-in {
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeIn 1s ease forwards;
-    }
-    @keyframes fadeIn {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-  </style>
-
-<style>
-    body {
-      opacity: 0;
       transition: opacity 0.5s ease-in-out;
     }
     body.fade-in {
@@ -38,7 +28,6 @@
       cursor: pointer;
     }
   </style>
-  
 </head>
 <body class="font-sans leading-relaxed text-base antialiased">
 
@@ -47,7 +36,7 @@
 
   <!-- Header -->
   <div class="flex justify-between items-center px-6 py-4 relative z-10">
-    <span class="text-2xl font-bold tracking-tight text-white">Nuerax</span>
+    <a href="index.html" class="transition-link text-2xl font-bold tracking-tight text-white">Nuerax</a>
     <button id="loginBtn" class="text-[#00FFFF] border border-[#00FFFF] px-4 py-1 rounded hover:bg-[#00FFFF] hover:text-black transition">
       Log In
     </button>
@@ -61,7 +50,7 @@
     <p class="text-[#A1A6AD] max-w-xl mb-8">
       Real-time AI news, insights, and stock market impact — curated for the next generation.
     </p>
-    <a href="explore.html" class="bg-gradient-to-br from-cyan-400 to-fuchsia-500 text-black font-medium px-6 py-3 rounded-xl shadow-lg hover:scale-105 transform transition duration-300">
+    <a href="explore.html" class="transition-link bg-gradient-to-br from-cyan-400 to-fuchsia-500 text-black font-medium px-6 py-3 rounded-xl shadow-lg hover:scale-105 transform transition duration-300">
       Start Exploring →
     </a>
   </section>
@@ -107,13 +96,12 @@
     });
   </script>
 
-<script>
-    // Fade-in on page load
+  <!-- Page Transition Script -->
+  <script>
     document.addEventListener("DOMContentLoaded", () => {
       document.body.classList.add("fade-in");
     });
-  
-    // Smooth transition on link click
+
     document.querySelectorAll("a.transition-link").forEach(link => {
       link.addEventListener("click", function (e) {
         e.preventDefault();
@@ -124,6 +112,6 @@
       });
     });
   </script>
-  
+
 </body>
 </html>
