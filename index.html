@@ -23,9 +23,11 @@
     body.fade-in {
       opacity: 1;
     }
-    a.transition-link {
-      transition: all 0.3s ease;
-      cursor: pointer;
+    nav {
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hidden-search {
+      display: none;
     }
   </style>
 </head>
@@ -34,16 +36,25 @@
   <!-- Particle Background -->
   <div id="tsparticles" class="fixed top-0 left-0 w-full h-full z-0 pointer-events-none"></div>
 
-  <!-- Header -->
-  <div class="flex justify-between items-center px-6 py-4 relative z-10">
+  <!-- Fixed Nav Bar -->
+  <nav id="navbar" class="fixed top-0 left-0 w-full px-6 py-4 flex justify-between items-center z-50 bg-[#0F1115]/80 backdrop-blur-lg border-b border-white/10 shadow-sm">
     <a href="index.html" class="transition-link text-2xl font-bold tracking-tight text-white">Nuerax</a>
-    <button id="loginBtn" class="text-[#00FFFF] border border-[#00FFFF] px-4 py-1 rounded hover:bg-[#00FFFF] hover:text-black transition">
-      Log In
-    </button>
+    <div class="flex items-center space-x-4">
+      <button id="searchToggle" class="text-white hover:text-cyan-400 text-xl">🔍</button>
+      <button id="loginBtn" class="text-[#00FFFF] border border-[#00FFFF] px-4 py-1 rounded hover:bg-[#00FFFF] hover:text-black transition">
+        Log In
+      </button>
+    </div>
+  </nav>
+
+  <!-- Search Dropdown -->
+  <div id="searchDropdown" class="hidden-search fixed top-20 left-1/2 transform -translate-x-1/2 z-40 w-full max-w-xl px-6">
+    <input type="text" placeholder="Search Nuerax.xyz"
+      class="w-full bg-[#1A1D21] text-white placeholder-[#A1A6AD] px-5 py-4 rounded-xl border border-[#00FFFF]/20 focus:outline-none focus:ring-2 focus:ring-cyan-400 shadow-xl">
   </div>
 
   <!-- Hero Section -->
-  <section class="relative z-10 flex flex-col items-center text-center mt-24 px-4 fade-in">
+  <section class="relative z-10 flex flex-col items-center text-center mt-40 px-4 fade-in">
     <h1 class="text-5xl font-bold mb-4 tracking-tight bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-pink-500 bg-clip-text text-transparent">
       The future is moving fast.<br />So are we.
     </h1>
@@ -96,7 +107,7 @@
     });
   </script>
 
-  <!-- Page Transition Script -->
+  <!-- UI Behavior -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       document.body.classList.add("fade-in");
@@ -110,6 +121,23 @@
         document.body.style.opacity = 0;
         setTimeout(() => window.location.href = href, 300);
       });
+    });
+
+    let lastScrollY = window.scrollY;
+    const navbar = document.getElementById("navbar");
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > lastScrollY) {
+        navbar.classList.add("opacity-60");
+      } else {
+        navbar.classList.remove("opacity-60");
+      }
+      lastScrollY = window.scrollY;
+    });
+
+    const searchToggle = document.getElementById("searchToggle");
+    const searchDropdown = document.getElementById("searchDropdown");
+    searchToggle.addEventListener("click", () => {
+      searchDropdown.classList.toggle("hidden-search");
     });
   </script>
 
