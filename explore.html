@@ -7,16 +7,17 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
   <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+    }
     body {
+      opacity: 0;
       background-color: #0F1115;
       background-image: radial-gradient(circle at 20% 20%, rgba(0, 255, 255, 0.05) 0%, transparent 70%),
                         radial-gradient(circle at 80% 40%, rgba(255, 0, 255, 0.05) 0%, transparent 70%);
-    }
-  </style>
-
-<style>
-    body {
-      opacity: 0;
       transition: opacity 0.5s ease-in-out;
     }
     body.fade-in {
@@ -27,7 +28,6 @@
       cursor: pointer;
     }
   </style>
-  
 </head>
 <body class="font-sans leading-relaxed text-base antialiased">
 
@@ -36,7 +36,7 @@
 
   <!-- Header -->
   <div class="flex justify-between items-center px-6 py-4 relative z-10">
-    <span class="text-2xl font-bold tracking-tight text-white">Nuerax</span>
+    <a href="index.html" class="transition-link text-2xl font-bold tracking-tight text-white">Nuerax</a>
     <button id="loginBtn" class="text-[#00FFFF] border border-[#00FFFF] px-4 py-1 rounded hover:bg-[#00FFFF] hover:text-black transition">
       Log In
     </button>
@@ -93,6 +93,23 @@
         }
       },
       detectRetina: true
+    });
+  </script>
+
+  <!-- Page Transition Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.body.classList.add("fade-in");
+    });
+
+    document.querySelectorAll("a.transition-link").forEach(link => {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        const href = this.getAttribute("href");
+        document.body.classList.remove("fade-in");
+        document.body.style.opacity = 0;
+        setTimeout(() => window.location.href = href, 300);
+      });
     });
   </script>
 
@@ -164,24 +181,5 @@
 
     fetchNews();
   </script>
-
-<script>
-    // Fade-in on page load
-    document.addEventListener("DOMContentLoaded", () => {
-      document.body.classList.add("fade-in");
-    });
-  
-    // Smooth transition on link click
-    document.querySelectorAll("a.transition-link").forEach(link => {
-      link.addEventListener("click", function (e) {
-        e.preventDefault();
-        const href = this.getAttribute("href");
-        document.body.classList.remove("fade-in");
-        document.body.style.opacity = 0;
-        setTimeout(() => window.location.href = href, 300);
-      });
-    });
-  </script>
-  
 </body>
 </html>
