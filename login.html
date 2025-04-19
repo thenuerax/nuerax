@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+\<!DOCTYPE html>
 <html lang="en" class="bg-[#0F1115] text-[#F5F7FA] scroll-smooth">
 <head>
   <meta charset="UTF-8" />
@@ -47,21 +47,27 @@
 
   <!-- Auth Form Container -->
   <main class="relative z-10 flex items-center justify-center min-h-screen px-4">
-    <div class="bg-[#1A1D21] p-8 rounded-xl shadow-lg w-full max-w-md fade-in">
+    <div class="bg-[#1A1D21] p-8 rounded-2xl shadow-lg w-full max-w-md fade-in">
       <h2 class="text-2xl font-semibold text-center text-white mb-6">Welcome to Nuerax</h2>
       <div class="flex flex-col space-y-4">
         <input id="emailInput" type="email" placeholder="Email"
-          class="px-4 py-2 rounded bg-[#0F1115] text-white placeholder-[#A1A6AD] focus:outline-none focus:ring-2 focus:ring-cyan-400" />
+          class="px-4 py-2 rounded-lg bg-[#0F1115] text-white placeholder-[#A1A6AD] focus:ring-2 focus:ring-cyan-400 focus:outline-none" />
         <input id="passwordInput" type="password" placeholder="Password"
-          class="px-4 py-2 rounded bg-[#0F1115] text-white placeholder-[#A1A6AD] focus:outline-none focus:ring-2 focus:ring-cyan-400" />
-        <button id="signInBtn" class="bg-[#00FFFF] text-black py-2 rounded font-medium hover:scale-105 transform transition">Sign In</button>
-        <button id="signUpBtn" class="border border-[#00FFFF] text-[#00FFFF] py-2 rounded font-medium hover:bg-[#00FFFF] hover:text-black transition">Create Account</button>
-        <button id="googleBtn" class="bg-white text-black py-2 rounded font-medium hover:scale-105 transform transition">Continue with Google</button>
+          class="px-4 py-2 rounded-lg bg-[#0F1115] text-white placeholder-[#A1A6AD] focus:ring-2 focus:ring-cyan-400 focus:outline-none" />
+        <button id="signInBtn" class="bg-gradient-to-br from-cyan-400 to-fuchsia-500 text-black py-3 rounded-xl font-semibold hover:scale-105 transform transition">
+          Sign In
+        </button>
+        <button id="signUpBtn" class="bg-gradient-to-br from-pink-500 to-purple-500 text-black py-3 rounded-xl font-semibold hover:scale-105 transform transition">
+          Create Account
+        </button>
+        <button id="googleBtn" class="border border-[#00FFFF] text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-fuchsia-500 py-3 rounded-xl font-semibold hover:scale-105 transform transition">
+          Continue with Google
+        </button>
       </div>
     </div>
   </main>
 
-  <!-- Particle Initialization & UI Behavior -->
+  <!-- Particle Init & UI Behavior -->
   <script>
     tsParticles.load("tsparticles", {
       fullScreen: { enable: false },
@@ -81,16 +87,13 @@
       e.preventDefault(); const href = link.getAttribute("href"); document.body.classList.remove("fade-in"); document.body.style.opacity = 0;
       setTimeout(() => window.location.href = href, 300);
     }));
-    let lastY = window.scrollY, navBar = document.querySelector("nav");
+    let last = window.scrollY, navBar = document.querySelector("nav");
     window.addEventListener("scroll", () => {
-      window.scrollY > lastY ? navBar.classList.add("opacity-60") : navBar.classList.remove("opacity-60");
-      lastY = window.scrollY;
+      window.scrollY > last ? navBar.classList.add("opacity-60") : navBar.classList.remove("opacity-60");
+      last = window.scrollY;
     });
     document.getElementById("searchToggle").onclick = () => document.getElementById("searchDropdown").classList.toggle("hidden-search");
-    document.getElementById("searchForm").onsubmit = e => {
-      e.preventDefault(); const q = document.getElementById("searchInput").value.trim() || "ai";
-      window.location.href = `explore.html?company=${encodeURIComponent(q)}`;
-    };
+    document.getElementById("searchForm").onsubmit = e => { e.preventDefault(); const q = document.getElementById("searchInput").value.trim() || "ai"; window.location.href = `explore.html?company=${encodeURIComponent(q)}`; };
   </script>
 
   <!-- Supabase Auth Logic -->
