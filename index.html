@@ -1,83 +1,62 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-[#0F1115] text-[#F5F7FA] scroll-smooth">
+<html lang="en" class="bg-[#1C1F22] text-[#F5F7FA]">
 <head>
-  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Nuerax — Real‑Time AI News</title>
-
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Nuerax — Home</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
   <style>
-    html,body{margin:0;padding:0;width:100%;height:100%}
-    body{opacity:0;background:#0F1115 radial-gradient(circle at20%20%,rgba(0,255,255,0.05)0%,transparent70%),radial-gradient(circle at80%40%,rgba(255,0,255,0.05)0%,transparent70%);transition:opacity .5s;}
-    body.fade-in{opacity:1}nav{transition:background-color .3s,box-shadow .3s}.hidden-search{display:none;}
+    html,body { margin:0; padding:0; width:100%; height:100%; }
+    body {
+      background-color: #1C1F22;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(0,255,255,0.05) 0%, transparent 70%),
+        radial-gradient(circle at 80% 40%, rgba(255,0,255,0.05) 0%, transparent 70%);
+    }
   </style>
 </head>
-<body class="font-sans antialiased">
+<body class="flex flex-col items-center justify-center min-h-screen px-6">
 
-  <div id="tsparticles" class="fixed inset-0 z-0 pointer-events-none"></div>
-
-  <nav id="navbar" class="fixed top-0 left-0 w-full px-6 py-4 flex justify-between items-center z-50 bg-[#0F1115]/90 backdrop-blur-md border-b border-white/10 shadow-sm">
-    <a href="index.html" class="text-2xl font-bold text-white">Nuerax</a>
-    <div class="flex items-center space-x-4">
-      <img id="searchToggle" src="https://i.imgur.com/J3IfkLV.png" class="w-6 h-6 cursor-pointer" alt="🔍"/>
-      <button id="authBtn" class="text-[#00FFFF] border border-[#00FFFF] px-4 py-1 rounded-full hover:bg-[#00FFFF] hover:text-black transition">
-        Log In
-      </button>
-    </div>
+  <!-- Nav -->
+  <nav class="absolute top-0 left-0 w-full flex justify-between p-6">
+    <a href="index.html" class="text-2xl font-bold">Nuerax</a>
+    <button id="authBtn" class="border border-cyan-400 px-4 py-1 rounded-xl">Log In</button>
   </nav>
 
   <!-- Hero -->
-  <section class="relative z-10 flex flex-col items-center text-center mt-40 px-4 fade-in">
-    <h1 class="text-5xl font-bold mb-4 tracking-tight bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-pink-500 bg-clip-text text-transparent">
-      The future is moving fast.<br/>So are we.
-    </h1>
-    <p class="text-[#A1A6AD] max-w-xl mb-8">
-      Real‑time AI news, insights, and stock market impact — curated for the next generation.
-    </p>
-    <a href="explore.html" class="transition-link bg-gradient-to-br from-cyan-400 to-fuchsia-500 text-black font-medium px-6 py-3 rounded-full shadow-lg hover:scale-105 transition duration-300">
-      Start Exploring →
-    </a>
-  </section>
+  <h1 class="text-4xl font-bold text-center mt-20">
+    The future is moving fast.<br/>So are we.
+  </h1>
+  <p class="mt-4 text-center text-gray-400 max-w-md">
+    Real‑time AI news, insights, and stock market impact — curated for the next generation.
+  </p>
+  <button onclick="location.href='explore.html'"
+          class="mt-8 bg-cyan-400 text-black px-6 py-3 rounded-xl">
+    Start Exploring →
+  </button>
 
   <script>
-    tsParticles.load("tsparticles",{/* same config */});
-    document.addEventListener("DOMContentLoaded",()=>document.body.classList.add("fade-in"));
-    document.querySelectorAll("a.transition-link").forEach(link=>{
-      link.addEventListener("click",e=>{
-        e.preventDefault();
-        const h=link.getAttribute("href");
-        document.body.classList.remove("fade-in");
-        document.body.style.opacity=0;
-        setTimeout(()=>location.href=h,300);
-      });
-    });
-    let lastY=window.scrollY,nav=document.getElementById("navbar");
-    window.addEventListener("scroll",()=>{window.scrollY>lastY?nav.classList.add("opacity-60"):nav.classList.remove("opacity-60");lastY=window.scrollY;});
-    document.getElementById("searchToggle").onclick=()=>document.querySelector(".hidden-search").classList.toggle("hidden");
-    document.querySelector("#searchForm")?.addEventListener("submit",e=>{e.preventDefault();const q=document.getElementById("searchInput").value.trim()||"ai";location.href=`explore.html?company=${encodeURIComponent(q)}`;});
-
-    // Supabase + dynamic username
-    const supabaseClient = supabase.createClient('https://qiiozzvsfpnhoxaamftf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.…');
-    const authBtn = document.getElementById("authBtn");
-    supabaseClient.auth.onAuthStateChange((_,s)=>{
-      if(s){
-        authBtn.textContent=`@${s.user.user_metadata.username}`;
-        authBtn.onclick=()=>location.href="profile.html";
+    const supabase = supabase.createClient(
+      'https://qiiozzvsfpnhoxaamftf.supabase.co',
+      'YOUR_SUPABASE_ANON_KEY'
+    );
+    const btn = document.getElementById('authBtn');
+    supabase.auth.onAuthStateChange((_, session) => {
+      if (session) {
+        btn.textContent = '@' + session.user.user_metadata.username;
+        btn.onclick = () => location.href = 'profile.html';
       } else {
-        authBtn.textContent="Log In";
-        authBtn.onclick=()=>location.href="login.html";
+        btn.textContent = 'Log In';
+        btn.onclick = () => location.href = 'login.html';
       }
     });
-    window.addEventListener("DOMContentLoaded",async()=>{
-      const {data:{session}}=await supabaseClient.auth.getSession();
-      if(session){
-        authBtn.textContent=`@${session.user.user_metadata.username}`;
-        authBtn.onclick=()=>location.href="profile.html";
+    window.addEventListener('DOMContentLoaded', async () => {
+      const { data:{ session } } = await supabase.auth.getSession();
+      if (session) {
+        btn.textContent = '@' + session.user.user_metadata.username;
+        btn.onclick = () => location.href = 'profile.html';
       }
     });
   </script>
-
 </body>
 </html>
