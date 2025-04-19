@@ -1,61 +1,58 @@
 <!DOCTYPE html>
 <html lang="en" class="bg-[#0F1115] text-[#F5F7FA] scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Nuerax — Real‑Time AI News</title>
 
   <!-- Tailwind & Particles -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
-
-  <!-- Supabase -->
+  <!-- Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
   <style>
     html, body { margin:0; padding:0; width:100%; height:100%; }
     body {
-      opacity: 0;
-      background-color: #0F1115;
+      opacity:0;
+      background-color:#0F1115;
       background-image:
-        radial-gradient(circle at 20% 20%, rgba(0,255,255,0.05) 0%, transparent 70%),
-        radial-gradient(circle at 80% 40%, rgba(255,0,255,0.05) 0%, transparent 70%);
-      transition: opacity 0.5s ease-in-out;
+        radial-gradient(circle at 20%20%, rgba(0,255,255,0.05)0%,transparent70%),
+        radial-gradient(circle at80%40%,rgba(255,0,255,0.05)0%,transparent70%);
+      transition:opacity .5s ease-in-out;
     }
-    body.fade-in { opacity: 1; }
-    nav { transition: background-color .3s, box-shadow .3s; }
-    .hidden-search { display: none; }
+    body.fade-in{opacity:1;}
+    nav{transition:background-color .3s,box-shadow .3s;}
+    .hidden-search{display:none;}
   </style>
 </head>
 <body class="font-sans antialiased">
 
-  <!-- Particles Canvas -->
+  <!-- Particles -->
   <div id="tsparticles" class="fixed inset-0 z-0 pointer-events-none"></div>
 
-  <!-- Nav Bar -->
+  <!-- Nav -->
   <nav id="navbar" class="fixed top-0 left-0 w-full px-6 py-4 flex justify-between items-center z-50 bg-[#0F1115]/90 backdrop-blur-md border-b border-white/10 shadow-sm">
     <a href="index.html" class="transition-link text-2xl font-bold text-white">Nuerax</a>
     <div class="flex items-center space-x-4">
+      <!-- Search Toggle -->
       <img id="searchToggle" src="https://i.imgur.com/J3IfkLV.png" alt="Search" class="w-6 h-6 cursor-pointer"/>
-      <button id="loginBtn" class="text-[#00FFFF] border border-[#00FFFF] px-4 py-1 rounded hover:bg-[#00FFFF] hover:text-black transition">
+      <!-- Auth Button -->
+      <button id="authBtn" class="text-[#00FFFF] border border-[#00FFFF] px-4 py-1 rounded hover:bg-[#00FFFF] hover:text-black transition">
         Log In
       </button>
     </div>
   </nav>
 
   <!-- Search Dropdown -->
-  <div id="searchDropdown" class="hidden-search fixed top-20 left-1/2 transform -translate-x-1/2 z-40 w-full max-w-xl px-6">
+  <div id="searchDropdown" class="hidden-search fixed top-20 left-1/2 transform -translate-x-1/2 w-full max-w-xl px-6 z-40">
     <form id="searchForm">
-      <input
-        id="searchInput"
-        type="text"
-        placeholder="Search Nuerax.xyz"
-        class="w-full bg-[#1A1D21] text-white placeholder-[#A1A6AD] px-5 py-4 rounded-xl border border-[#00FFFF]/20 focus:outline-none focus:ring-2 focus:ring-cyan-400 shadow-xl"
-      />
+      <input id="searchInput" type="text" placeholder="Search Nuerax.xyz"
+        class="w-full bg-[#1A1D21] text-white placeholder-[#A1A6AD] px-5 py-4 rounded-xl border border-[#00FFFF]/20 focus:outline-none focus:ring-2 focus:ring-cyan-400 shadow-xl"/>
     </form>
   </div>
 
-  <!-- Hero Section -->
+  <!-- Hero -->
   <section class="relative z-10 flex flex-col items-center text-center mt-40 px-4 fade-in">
     <h1 class="text-5xl font-bold mb-4 tracking-tight bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-pink-500 bg-clip-text text-transparent">
       The future is moving fast.<br/>So are we.
@@ -63,10 +60,7 @@
     <p class="text-[#A1A6AD] max-w-xl mb-8">
       Real‑time AI news, insights, and stock market impact — curated for the next generation.
     </p>
-    <a
-      href="explore.html"
-      class="transition-link bg-gradient-to-br from-cyan-400 to-fuchsia-500 text-black font-medium px-6 py-3 rounded-xl shadow-lg hover:scale-105 transform transition duration-300"
-    >
+    <a href="explore.html" class="transition-link bg-gradient-to-br from-cyan-400 to-fuchsia-500 text-black font-medium px-6 py-3 rounded-xl shadow-lg hover:scale-105 transform transition duration-300">
       Start Exploring →
     </a>
   </section>
@@ -74,94 +68,78 @@
   <!-- Particles Init -->
   <script>
     tsParticles.load("tsparticles", {
-      fullScreen: { enable: false },
-      background: { color: "#0F1115" },
-      particles: {
-        number: { value:50, density:{ enable:true, value_area:800 }},
-        color: { value:"#00FFFF" }, shape:{ type:"circle" },
-        opacity:{ value:0.3 }, size:{ value:2 },
-        links:{ enable:true, distance:130, color:"#00FFFF", opacity:0.2, width:1 },
-        move:{ enable:true, speed:0.5, direction:"none", outModes:{ default:"bounce" } }
+      fullScreen:{ enable:false },
+      background:{ color:"#0F1115"},
+      particles:{
+        number:{ value:50, density:{ enable:true, value_area:800 }},
+        color:{ value:"#00FFFF"}, shape:{ type:"circle"},
+        opacity:{ value:0.3}, size:{ value:2},
+        links:{ enable:true,distance:130,color:"#00FFFF",opacity:0.2,width:1},
+        move:{ enable:true,speed:0.5,direction:"none",outModes:{ default:"bounce"}}
       },
       interactivity:{
-        events:{ onHover:{ enable:true, mode:"grab" }, resize:true },
-        modes:{ grab:{ distance:140, links:{ opacity:0.3 } } }
+        events:{ onHover:{ enable:true,mode:"grab"},resize:true },
+        modes:{ grab:{ distance:140,links:{ opacity:0.3 }}}
       },
       detectRetina:true
     });
   </script>
 
-  <!-- UI & Search Behavior -->
+  <!-- UI & Search Handler -->
   <script>
-    // Fade in page
-    document.addEventListener("DOMContentLoaded", () => document.body.classList.add("fade-in"));
-
-    // Smooth link transitions
-    document.querySelectorAll("a.transition-link").forEach(link => {
-      link.addEventListener("click", e => {
+    document.addEventListener("DOMContentLoaded",()=>{ document.body.classList.add("fade-in"); });
+    document.querySelectorAll("a.transition-link").forEach(link=>{
+      link.addEventListener("click",e=>{
         e.preventDefault();
-        const href = link.getAttribute("href");
+        const h=link.getAttribute("href");
         document.body.classList.remove("fade-in");
-        document.body.style.opacity = 0;
-        setTimeout(() => window.location.href = href, 300);
+        document.body.style.opacity=0;
+        setTimeout(()=>window.location.href=h,300);
       });
     });
-
     // Nav fade on scroll
-    let lastY = window.scrollY;
-    const nav = document.getElementById("navbar");
-    window.addEventListener("scroll", () => {
-      window.scrollY > lastY ? nav.classList.add("opacity-60") : nav.classList.remove("opacity-60");
-      lastY = window.scrollY;
+    let lastY=window.scrollY,nav=document.getElementById("navbar");
+    window.addEventListener("scroll",()=>{
+      window.scrollY>lastY?nav.classList.add("opacity-60"):nav.classList.remove("opacity-60");
+      lastY=window.scrollY;
     });
-
-    // Toggle search dropdown
-    document.getElementById("searchToggle").addEventListener("click", () => {
+    // Search toggle & redirect
+    document.getElementById("searchToggle").addEventListener("click",()=>{
       document.getElementById("searchDropdown").classList.toggle("hidden-search");
     });
-
-    // Redirect on search
-    document.getElementById("searchForm").addEventListener("submit", e => {
+    document.getElementById("searchForm").addEventListener("submit",e=>{
       e.preventDefault();
-      const q = document.getElementById("searchInput").value.trim() || "ai";
-      window.location.href = `explore.html?company=${encodeURIComponent(q)}`;
+      const q=document.getElementById("searchInput").value.trim()||"ai";
+      window.location.href=`explore.html?company=${encodeURIComponent(q)}`;
     });
   </script>
 
-  <!-- Supabase Auth / Dynamic Log In/Out -->
+  <!-- Supabase Auth & Dynamic Login/Logout -->
   <script>
-    const supabaseUrl = 'https://qiiozzvsfpnhoxaamftf.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5...';  // your anon key
-    window.supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    const SUPA_URL = 'https://qiiozzvsfpnhoxaamftf.supabase.co';
+    const SUPA_KEY = 'YOUR_ANON_KEY';
+    const supabase = supabase.createClient(SUPA_URL, SUPA_KEY);
 
-    const btn = document.getElementById('loginBtn');
-    supabase.auth.onAuthStateChange((_, session) => {
-      if (session) {
-        btn.textContent = 'Log Out';
-        btn.onclick = async e => {
-          e.preventDefault();
-          await supabase.auth.signOut();
-          window.location.replace('login.html');
-        }
+    const authBtn = document.getElementById('authBtn');
+    // Update button on auth state change
+    supabase.auth.onAuthStateChange((_, session)=>{
+      if(session){
+        authBtn.textContent='Log Out';
+        authBtn.onclick=async e=>{ e.preventDefault(); await supabase.auth.signOut(); window.location.replace('login.html'); };
       } else {
-        btn.textContent = 'Log In';
-        btn.onclick = () => window.location.replace('login.html');
+        authBtn.textContent='Log In';
+        authBtn.onclick=()=>window.location.replace('login.html');
       }
     });
-
-    // Initialize button on load
-    window.addEventListener('DOMContentLoaded', async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        btn.textContent = 'Log Out';
-        btn.onclick = async e => {
-          e.preventDefault();
-          await supabase.auth.signOut();
-          window.location.replace('login.html');
-        }
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', async()=>{
+      const { data:{ session } } = await supabase.auth.getSession();
+      if(session){
+        authBtn.textContent='Log Out';
+        authBtn.onclick=async e=>{ e.preventDefault(); await supabase.auth.signOut(); window.location.replace('login.html'); };
       } else {
-        btn.textContent = 'Log In';
-        btn.onclick = () => window.location.replace('login.html');
+        authBtn.textContent='Log In';
+        authBtn.onclick=()=>window.location.replace('login.html');
       }
     });
   </script>
