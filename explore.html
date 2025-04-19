@@ -1,53 +1,42 @@
 <!DOCTYPE html>
 <html lang="en" class="bg-[#0F1115] text-[#F5F7FA] scroll-smooth">
 <head>
-  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Nuerax — Explore AI News</title>
 
   <!-- Tailwind & Particles -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
-  <!-- Supabase JS -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script>
-    // Auth guard
-    const SUPA_URL = 'https://qiiozzvsfpnhoxaamftf.supabase.co';
-    const SUPA_KEY = 'YOUR_ANON_KEY';
-    const supabase = supabase.createClient(SUPA_URL, SUPA_KEY);
-    window.addEventListener('DOMContentLoaded', async()=>{
-      const { data:{ session } } = await supabase.auth.getSession();
-      if(!session) window.location.replace('login.html');
-    });
-  </script>
 
   <style>
-    html,body{margin:0;padding:0;width:100%;height:100%}
+    html, body { margin:0; padding:0; width:100%; height:100%; }
     body {
-      opacity:0;
-      background-color:#0F1115;
+      opacity: 0;
+      background-color: #0F1115;
       background-image:
-        radial-gradient(circle at20%20%,rgba(0,255,255,0.05)0%,transparent70%),
-        radial-gradient(circle at80%40%,rgba(255,0,255,0.05)0%,transparent70%);
-      transition:opacity .5s ease-in-out;
+        radial-gradient(circle at 20% 20%, rgba(0,255,255,0.05) 0%, transparent 70%),
+        radial-gradient(circle at 80% 40%, rgba(255,0,255,0.05) 0%, transparent 70%);
+      transition: opacity 0.5s ease-in-out;
     }
-    body.fade-in{opacity:1}
-    nav{transition:background-color .3s,box-shadow .3s}
-    .hidden-search{display:none}
+    body.fade-in { opacity: 1; }
+    nav { transition: background-color .3s, box-shadow .3s; }
+    .hidden-search { display: none; }
   </style>
 </head>
 <body class="font-sans antialiased">
 
-  <!-- Particles -->
+  <!-- Particles Background -->
   <div id="tsparticles" class="fixed inset-0 z-0 pointer-events-none"></div>
 
-  <!-- Nav -->
+  <!-- Nav Bar -->
   <nav id="navbar" class="fixed top-0 left-0 w-full px-6 py-4 flex justify-between items-center z-50 bg-[#0F1115]/90 backdrop-blur-md border-b border-white/10 shadow-sm">
     <a href="index.html" class="transition-link text-2xl font-bold text-white">Nuerax</a>
     <div class="flex items-center space-x-4">
-      <img id="searchToggle" src="https://i.imgur.com/J3IfkLV.png" alt="Search" class="w-6 h-6 cursor-pointer"/>
-      <button id="authBtn" class="text-[#00FFFF] border border-[#00FFFF] px-4 py-1 rounded hover:bg-[#00FFFF] hover:text-black transition">
+      <img id="searchToggle" src="https://i.imgur.com/J3IfkLV.png" alt="Search" class="w-6 h-6 cursor-pointer" />
+      <a href="login.html" class="text-[#00FFFF] border border-[#00FFFF] px-4 py-1 rounded hover:bg-[#00FFFF] hover:text-black transition">
         Log In
-      </button>
+      </a>
     </div>
   </nav>
 
@@ -55,7 +44,7 @@
   <div id="searchDropdown" class="hidden-search fixed top-20 left-1/2 transform -translate-x-1/2 w-full max-w-xl px-6 z-40">
     <form id="searchForm">
       <input id="searchInput" type="text" placeholder="Search Nuerax.xyz"
-        class="w-full bg-[#1A1D21] text-white placeholder-[#A1A6AD] px-5 py-4 rounded-xl border border-[#00FFFF]/20 focus:ring-2 focus:ring-cyan-400 focus:outline-none shadow-xl"/>
+        class="w-full bg-[#1A1D21] text-white placeholder-[#A1A6AD] px-5 py-4 rounded-xl border border-[#00FFFF]/20 focus:outline-none focus:ring-2 focus:ring-cyan-400 shadow-xl" />
     </form>
   </div>
 
@@ -69,97 +58,119 @@
   <!-- Particles Init -->
   <script>
     tsParticles.load("tsparticles", {
-      fullScreen:{enable:false},
-      background:{color:"#0F1115"},
+      fullScreen:{ enable:false },
+      background:{ color:"#0F1115" },
       particles:{
-        number:{value:50,density:{enable:true,value_area:800}},
-        color:{value:"#00FFFF"},shape:{type:"circle"},
-        opacity:{value:0.3},size:{value:2},
-        links:{enable:true,distance:130,color:"#00FFFF",opacity:0.2,width:1},
-        move:{enable:true,speed:0.5,direction:"none",outModes:{default:"bounce"}}
+        number:{ value:50, density:{ enable:true, value_area:800 }},
+        color:{ value:"#00FFFF" }, shape:{ type:"circle" },
+        opacity:{ value:0.3 }, size:{ value:2 },
+        links:{ enable:true, distance:130, color:"#00FFFF", opacity:0.2, width:1 },
+        move:{ enable:true, speed:0.5, direction:"none", outModes:{ default:"bounce" } }
       },
-      interactivity:{events:{onHover:{enable:true,mode:"grab"},resize:true},modes:{grab:{distance:140,links:{opacity:0.3}}}},
+      interactivity:{
+        events:{ onHover:{ enable:true, mode:"grab" }, resize:true },
+        modes:{ grab:{ distance:140, links:{ opacity:0.3 } } }
+      },
       detectRetina:true
     });
   </script>
 
-  <!-- UI & Search -->
+  <!-- UI & Search Behavior -->
   <script>
-    document.addEventListener("DOMContentLoaded",()=>document.body.classList.add("fade-in"));
-    document.querySelectorAll("a.transition-link").forEach(link=>{
-      link.addEventListener("click",e=>{
+    document.addEventListener("DOMContentLoaded", () => document.body.classList.add("fade-in"));
+    document.querySelectorAll("a.transition-link").forEach(link => {
+      link.addEventListener("click", e => {
         e.preventDefault();
-        const h=link.getAttribute("href");
+        const href = link.getAttribute("href");
         document.body.classList.remove("fade-in");
-        document.body.style.opacity=0;
-        setTimeout(()=>window.location.href=h,300);
+        document.body.style.opacity = 0;
+        setTimeout(() => window.location.href = href, 300);
       });
     });
-    let last=window.scrollY,navb=document.getElementById("navbar");
-    window.addEventListener("scroll",()=>{
-      window.scrollY>last?navb.classList.add("opacity-60"):navb.classList.remove("opacity-60");
-      last=window.scrollY;
+    let lastY = window.scrollY, nav = document.getElementById("navbar");
+    window.addEventListener("scroll", () => {
+      window.scrollY > lastY ? nav.classList.add("opacity-60") : nav.classList.remove("opacity-60");
+      lastY = window.scrollY;
     });
-    document.getElementById("searchToggle").addEventListener("click",()=>{
+    document.getElementById("searchToggle").addEventListener("click", () => {
       document.getElementById("searchDropdown").classList.toggle("hidden-search");
     });
-    document.getElementById("searchForm").addEventListener("submit",e=>{
+    document.getElementById("searchForm").addEventListener("submit", e => {
       e.preventDefault();
-      const q=document.getElementById("searchInput").value.trim()||"ai";
-      window.location.href=`explore.html?company=${encodeURIComponent(q)}`;
+      const q = document.getElementById("searchInput").value.trim() || "ai";
+      window.location.href = `explore.html?company=${encodeURIComponent(q)}`;
     });
   </script>
 
-  <!-- Supabase Auth & Dynamic Button -->
+  <!-- News Fetch & Logo Mapping -->
   <script>
-    const authBtn = document.getElementById('authBtn');
-    supabase.auth.onAuthStateChange((_,session)=>{
-      if(session){
-        authBtn.textContent='Log Out';
-        authBtn.onclick=async e=>{e.preventDefault();await supabase.auth.signOut();window.location.replace('login.html');};
-      }else{
-        authBtn.textContent='Log In';
-        authBtn.onclick=()=>window.location.replace('login.html');
-      }
-    });
-  </script>
+    const newsContainer = document.getElementById('news-container');
+    const params = new URLSearchParams(window.location.search);
+    const searchQuery = params.get('company') || 'ai';
 
-  <!-- Fetch & Render News -->
-  <script>
-    const newsContainer=document.getElementById('news-container');
-    const params=new URLSearchParams(window.location.search);
-    const searchQuery=params.get('company')||'ai';
-    const companyLogos={
-      openai:"/assets/openai.png",google:"/assets/google.png",meta:"/assets/meta.png",
-      amazon:"/assets/amazon.png",tesla:"/assets/tesla.png",microsoft:"/assets/microsoft.png",
-      apple:"/assets/apple.png",palantir:"/assets/palantir.png",fallback:"/assets/fallback.png"
+    const companyLogos = {
+      openai: "/assets/openai.png",
+      google: "/assets/google.png",
+      meta: "/assets/meta.png",
+      amazon: "/assets/amazon.png",
+      tesla: "/assets/tesla.png",
+      microsoft: "/assets/microsoft.png",
+      apple: "/assets/apple.png",
+      palantir: "/assets/palantir.png",
+      fallback: "/assets/fallback.png"
     };
-    function getLogo(n){return companyLogos[n.toLowerCase()]||companyLogos.fallback;}
-    function getHoursAgo(d){const h=Math.floor((Date.now()-new Date(d))/(36e5));return h<1?"Just now":h+" hour"+(h!==1?"s":"")+" ago";}
-    function isAI(a){const t=(a.title+a.description).toLowerCase();return["ai","artificial intelligence","robot","machine learning","deep learning"].some(k=>t.includes(k));}
-    (async()=>{
-      try{
-        const res=await fetch(`/api/news?company=${encodeURIComponent(searchQuery)}`);
-        const arts=await res.json(),fil=arts.filter(isAI);
-        newsContainer.innerHTML=fil.length
-          ? fil.map(a=>`
-            <div class="flex bg-[#1A1D21] rounded-xl overflow-hidden mb-6 shadow-lg hover:shadow-cyan-500/10 transition">
-              <div class="flex-shrink-0 bg-[#0F1115] p-4 flex items-center justify-center w-32 h-32">
-                <img src="${getLogo(searchQuery)}" alt="${searchQuery}" class="max-h-16 max-w-16 object-contain"/>
-              </div>
-              <div class="p-5 flex flex-col justify-between">
-                <div class="text-sm text-[#A1A6AD] mb-1">${getHoursAgo(a.publishedAt)} • ${a.source.name}</div>
-                <h3 class="text-lg font-semibold text-[#F5F7FA] mb-2">${a.title}</h3>
-                <p class="text-[#A1A6AD] text-sm mb-3">${a.description||""}</p>
-                <a href="${a.url}" target="_blank" class="text-[#00FFFF] text-sm underline">Read full article →</a>
-              </div>
-            </div>`).join("")
-          : `<p class="text-[#A1A6AD]">No articles found.</p>`;
-      }catch(e){
-        newsContainer.innerHTML='<p class="text-red-500">Error loading news.</p>';
-        console.error(e);
+
+    function getLogo(name) {
+      return companyLogos[name.toLowerCase()] || companyLogos.fallback;
+    }
+
+    function getHoursAgo(dateString) {
+      const hours = Math.floor((Date.now() - new Date(dateString)) / (1000 * 60 * 60));
+      return hours < 1 ? "Just now" : `${hours} hour${hours !== 1 ? "s" : ""} ago`;
+    }
+
+    function isAIArticle(article) {
+      const content = (article.title + article.description).toLowerCase();
+      return ["ai", "artificial intelligence", "robot", "machine learning", "deep learning"]
+        .some(k => content.includes(k));
+    }
+
+    async function fetchNews(query = "ai") {
+      try {
+        const res = await fetch(`/api/news?company=${encodeURIComponent(query)}`);
+        const articles = await res.json();
+        const filtered = articles.filter(isAIArticle);
+        newsContainer.innerHTML = "";
+
+        if (!filtered.length) {
+          newsContainer.innerHTML = '<p class="text-[#A1A6AD]">No articles found.</p>';
+          return;
+        }
+
+        filtered.forEach(a => {
+          const logo = getLogo(query);
+          const timeAgo = getHoursAgo(a.publishedAt);
+          const card = document.createElement("div");
+          card.className = "flex bg-[#1A1D21] rounded-xl overflow-hidden mb-6 shadow-lg hover:shadow-cyan-500/10 transition";
+          card.innerHTML = `
+            <div class="flex-shrink-0 bg-[#0F1115] p-4 flex items-center justify-center w-32 h-32">
+              <img src="${logo}" alt="${query}" class="max-h-16 max-w-16 object-contain"/>
+            </div>
+            <div class="p-5 flex flex-col justify-between">
+              <div class="text-sm text-[#A1A6AD] mb-1">${timeAgo} • ${a.source.name}</div>
+              <h3 class="text-lg font-semibold text-[#F5F7FA] mb-2">${a.title}</h3>
+              <p class="text-[#A1A6AD] text-sm mb-3">${a.description||""}</p>
+              <a href="${a.url}" target="_blank" class="text-[#00FFFF] text-sm underline">Read full article →</a>
+            </div>`;
+          newsContainer.appendChild(card);
+        });
+      } catch (err) {
+        newsContainer.innerHTML = '<p class="text-red-500">Error loading news.</p>';
+        console.error(err);
       }
-    })();
+    }
+
+    fetchNews(searchQuery);
   </script>
 
 </body>
