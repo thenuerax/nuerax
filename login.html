@@ -1,54 +1,165 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-[#1C1F22] text-[#F5F7FA]">
+<html lang="en" class="bg-[#0F1115] text-[#F5F7FA] scroll-smooth">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Nuerax — Log In</title>
+
+  <!-- Tailwind & Particles -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
+  <!-- Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
   <style>
-    html,body { margin:0; padding:0; width:100%; height:100%; }
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; }
     body {
-      background-color: #1C1F22;
+      opacity: 0;
+      background-color: #0F1115;
       background-image:
         radial-gradient(circle at 20% 20%, rgba(0,255,255,0.05) 0%, transparent 70%),
         radial-gradient(circle at 80% 40%, rgba(255,0,255,0.05) 0%, transparent 70%);
+      transition: opacity 0.5s ease-in-out;
     }
+    body.fade-in { opacity: 1; }
   </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen px-4">
+<body class="font-sans antialiased">
 
-  <h2 class="text-2xl font-bold mb-6">Sign In or Create Account</h2>
-  <div class="bg-[#2A2D31] p-8 rounded-xl shadow-lg w-full max-w-md">
-    <input id="emailInput"    type="email"    placeholder="Email"    class="w-full mb-4 px-4 py-2 rounded bg-[#1C1F22]"/>
-    <input id="passwordInput" type="password" placeholder="Password" class="w-full mb-6 px-4 py-2 rounded bg-[#1C1F22]"/>
-    <div class="flex space-x-4">
-      <button id="signInBtn" class="flex-1 bg-[#00FFFF] text-black py-2 rounded-xl">Sign In</button>
-      <button id="signUpBtn" class="flex-1 border border-[#00FFFF] text-[#00FFFF] py-2 rounded-xl">Sign Up</button>
+  <!-- Particles Background -->
+  <div id="tsparticles" class="fixed inset-0 z-0 pointer-events-none"></div>
+
+  <!-- Nav Bar -->
+  <nav class="fixed top-0 left-0 w-full px-6 py-4 flex justify-between items-center z-50
+               bg-[#0F1115]/90 backdrop-blur-md border-b border-white/10 shadow-sm">
+    <a href="index.html" class="text-2xl font-bold text-white">Nuerax</a>
+    <a href="index.html" class="text-[#00FFFF] border border-[#00FFFF] px-4 py-1 rounded
+                               hover:bg-[#00FFFF] hover:text-black transition">Home</a>
+  </nav>
+
+  <!-- Sign-In / Create Buttons -->
+  <main class="relative z-10 flex items-center justify-center min-h-screen px-4">
+    <div class="bg-[#1A1D21] p-8 rounded-2xl shadow-lg w-full max-w-md fade-in">
+      <h2 class="text-2xl font-semibold text-center text-white mb-6">Welcome to Nuerax</h2>
+      <div class="flex flex-col space-y-4">
+        <input id="emailInput"    type="email"    placeholder="Email"
+          class="px-4 py-2 rounded-lg bg-[#0F1115] text-white placeholder-[#A1A6AD] focus:ring-2 focus:ring-cyan-400 focus:outline-none"/>
+        <input id="passwordInput" type="password" placeholder="Password"
+          class="px-4 py-2 rounded-lg bg-[#0F1115] text-white placeholder-[#A1A6AD] focus:ring-2 focus:ring-cyan-400 focus:outline-none"/>
+        <button id="signInBtn"
+          class="bg-gradient-to-br from-cyan-400 to-fuchsia-500 text-black py-3 rounded-xl font-semibold hover:scale-105 transition">
+          Sign In
+        </button>
+        <button id="createAccountBtn"
+          class="border border-[#00FFFF] text-[#00FFFF] py-3 rounded-xl font-semibold hover:bg-[#00FFFF] hover:text-black transition">
+          Create Account
+        </button>
+        <button id="googleBtn"
+          class="border border-[#00FFFF] text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-fuchsia-500 py-3 rounded-xl font-semibold hover:scale-105 transition">
+          Continue with Google
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Signup Modal -->
+  <div id="signupModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-[#1A1D21] p-8 rounded-2xl shadow-lg w-full max-w-md relative">
+      <button id="closeSignup" class="absolute top-4 right-4 text-[#A1A6AD] hover:text-white">✕</button>
+      <h2 class="text-2xl font-semibold text-center text-white mb-4">Create Account</h2>
+      <form id="signupForm" class="flex flex-col space-y-4">
+        <input id="signupUsername" type="text" required placeholder="Username (no @)"
+          class="px-4 py-2 rounded-lg bg-[#0F1115] text-white placeholder-[#A1A6AD] focus:ring-2 focus:ring-cyan-400 focus:outline-none"/>
+        <input id="signupName"     type="text" required placeholder="Full Name"
+          class="px-4 py-2 rounded-lg bg-[#0F1115] text-white placeholder-[#A1A6AD] focus:ring-2 focus:ring-cyan-400 focus:outline-none"/>
+        <input id="signupEmail"    type="email" required placeholder="Email"
+          class="px-4 py-2 rounded-lg bg-[#0F1115] text-white placeholder-[#A1A6AD] focus:ring-2 focus:ring-cyan-400 focus:outline-none"/>
+        <input id="signupPhone"    type="tel" required placeholder="Phone Number"
+          class="px-4 py-2 rounded-lg bg-[#0F1115] text-white placeholder-[#A1A6AD] focus:ring-2 focus:ring-cyan-400 focus:outline-none"/>
+        <input id="signupPassword" type="password" required placeholder="Password"
+          class="px-4 py-2 rounded-lg bg-[#0F1115] text-white placeholder-[#A1A6AD] focus:ring-2 focus:ring-cyan-400 focus:outline-none"/>
+        <input id="signupConfirm"  type="password" required placeholder="Confirm Password"
+          class="px-4 py-2 rounded-lg bg-[#0F1115] text-white placeholder-[#A1A6AD] focus:ring-2 focus:ring-cyan-400 focus:outline-none"/>
+        <button type="submit"
+          class="bg-gradient-to-br from-pink-500 to-purple-500 text-black py-3 rounded-xl font-semibold hover:scale-105 transition">
+          Sign Up
+        </button>
+      </form>
     </div>
   </div>
 
   <script>
-    const supabase = supabase.createClient(
+    // Initialize particles
+    tsParticles.load("tsparticles", {
+      fullScreen:{enable:false}, background:{color:"#0F1115"},
+      particles:{
+        number:{value:50,density:{enable:true,value_area:800}},
+        color:{value:"#00FFFF"}, shape:{type:"circle"},
+        opacity:{value:0.3}, size:{value:2},
+        links:{enable:true,distance:130,color:"#00FFFF",opacity:0.2,width:1},
+        move:{enable:true,speed:0.5,direction:"none",outModes:{default:"bounce"}}
+      },
+      interactivity:{events:{onHover:{enable:true,mode:"grab"},resize:true},modes:{grab:{distance:140,links:{opacity:0.3}}}},
+      detectRetina:true
+    });
+
+    // Fade in page
+    document.addEventListener("DOMContentLoaded", () => document.body.classList.add("fade-in"));
+
+    // Show/hide signup modal
+    document.getElementById('createAccountBtn').onclick = () =>
+      document.getElementById('signupModal').classList.remove('hidden');
+    document.getElementById('closeSignup').onclick = () =>
+      document.getElementById('signupModal').classList.add('hidden');
+
+    // Supabase init
+    const { createClient } = supabase;
+    const supabaseClient = createClient(
       'https://qiiozzvsfpnhoxaamftf.supabase.co',
-      'YOUR_SUPABASE_ANON_KEY'
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpaW96enZzZnBuaG94YWFtZnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ2NTYzNzMsImV4cCI6MjA2MDIzMjM3M30.yp8z9dWlQV4cmHrU4tLyT7x90_Sl_qvuQM1jokSP7Qw'
     );
 
+    // Sign In
     document.getElementById('signInBtn').onclick = async () => {
       const email = document.getElementById('emailInput').value;
       const pass  = document.getElementById('passwordInput').value;
-      const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
-      if (error) return alert(error.message);
-      location.replace('explore.html');
+      const { error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
+      if (error) {
+        alert('Account not found. Please create one.');
+        return document.getElementById('signupModal').classList.remove('hidden');
+      }
+      window.location.replace('explore.html');
     };
 
-    document.getElementById('signUpBtn').onclick = async () => {
-      const email = document.getElementById('emailInput').value;
-      const pass  = document.getElementById('passwordInput').value;
-      const { error } = await supabase.auth.signUp({ email, password: pass });
+    // Sign Up
+    document.getElementById('signupForm').onsubmit = async e => {
+      e.preventDefault();
+      const u   = document.getElementById('signupUsername').value.trim();
+      if (u.includes('@')) return alert('Username must not include @');
+      const pwd = document.getElementById('signupPassword').value;
+      const cnf = document.getElementById('signupConfirm').value;
+      if (pwd !== cnf) return alert('Passwords must match');
+      const { error } = await supabaseClient.auth.signUp({
+        email: document.getElementById('signupEmail').value,
+        password: pwd,
+        options: { data:{
+          username: u,
+          name:     document.getElementById('signupName').value.trim(),
+          phone:    document.getElementById('signupPhone').value.trim()
+        }}
+      });
       if (error) return alert(error.message);
-      location.replace('explore.html');
+      window.location.replace('explore.html');
+    };
+
+    // Google OAuth
+    document.getElementById('googleBtn').onclick = () => {
+      supabaseClient.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin + '/explore.html' }
+      });
     };
   </script>
+
 </body>
 </html>
