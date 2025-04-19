@@ -37,81 +37,87 @@
     <a href="index.html" class="text-[#00FFFF] border border-[#00FFFF] px-4 py-1 rounded hover:bg-[#00FFFF] hover:text-black transition">Home</a>
   </nav>
 
-  <!-- Login Form Container -->
+  <!-- Search Dropdown -->
+  <div id="searchDropdown" class="hidden-search fixed top-20 left-1/2 transform -translate-x-1/2 w-full max-w-xl px-6 z-40">
+    <form id="searchForm">
+      <input id="searchInput" type="text" placeholder="Search Nuerax.xyz"
+        class="w-full bg-[#1A1D21] text-white placeholder-[#A1A6AD] px-5 py-4 rounded-xl border border-[#00FFFF]/20 focus:outline-none focus:ring-2 focus:ring-cyan-400 shadow-xl" />
+    </form>
+  </div>
+
+  <!-- Auth Form Container -->
   <main class="relative z-10 flex items-center justify-center min-h-screen px-4">
     <div class="bg-[#1A1D21] p-8 rounded-xl shadow-lg w-full max-w-md fade-in">
-      <h2 class="text-2xl font-semibold text-center text-white mb-6">Sign In / Sign Up</h2>
-      <form id="authForm" class="flex flex-col space-y-4">
-        <input id="emailInput" type="email" required placeholder="Email"
+      <h2 class="text-2xl font-semibold text-center text-white mb-6">Welcome to Nuerax</h2>
+      <div class="flex flex-col space-y-4">
+        <input id="emailInput" type="email" placeholder="Email"
           class="px-4 py-2 rounded bg-[#0F1115] text-white placeholder-[#A1A6AD] focus:outline-none focus:ring-2 focus:ring-cyan-400" />
-        <input id="passwordInput" type="password" required placeholder="Password"
+        <input id="passwordInput" type="password" placeholder="Password"
           class="px-4 py-2 rounded bg-[#0F1115] text-white placeholder-[#A1A6AD] focus:outline-none focus:ring-2 focus:ring-cyan-400" />
-        <button type="submit" class="bg-[#00FFFF] text-black py-2 rounded font-medium hover:scale-105 transform transition">
-          Continue
-        </button>
-      </form>
+        <button id="signInBtn" class="bg-[#00FFFF] text-black py-2 rounded font-medium hover:scale-105 transform transition">Sign In</button>
+        <button id="signUpBtn" class="border border-[#00FFFF] text-[#00FFFF] py-2 rounded font-medium hover:bg-[#00FFFF] hover:text-black transition">Create Account</button>
+        <button id="googleBtn" class="bg-white text-black py-2 rounded font-medium hover:scale-105 transform transition">Continue with Google</button>
+      </div>
     </div>
   </main>
 
-  <!-- Particle Initialization -->
+  <!-- Particle Initialization & UI Behavior -->
   <script>
     tsParticles.load("tsparticles", {
       fullScreen: { enable: false },
       background: { color: "#0F1115" },
       particles: {
-        number: { value:50, density:{ enable:true, value_area:800 } },
-        color:{ value:"#00FFFF" }, shape:{ type:"circle" },
-        opacity:{ value:0.3 }, size:{ value:2 },
-        links:{ enable:true, distance:130, color:"#00FFFF", opacity:0.2, width:1 },
-        move:{ enable:true, speed:0.5, direction:"none", outModes:{ default:"bounce" } }
+        number: { value: 50, density: { enable: true, value_area: 800 } },
+        color: { value: "#00FFFF" }, shape: { type: "circle" },
+        opacity: { value: 0.3 }, size: { value: 2 },
+        links: { enable: true, distance: 130, color: "#00FFFF", opacity: 0.2, width: 1 },
+        move: { enable: true, speed: 0.5, direction: "none", outModes: { default: "bounce" } }
       },
-      interactivity:{ events:{ onHover:{ enable:true, mode:"grab" }, resize:true }, modes:{ grab:{ distance:140, links:{ opacity:0.3 } } } },
-      detectRetina:true
+      interactivity: { events: { onHover: { enable: true, mode: "grab" }, resize: true }, modes: { grab: { distance: 140, links: { opacity: 0.3 } } } },
+      detectRetina: true
     });
-
     document.addEventListener("DOMContentLoaded", () => document.body.classList.add("fade-in"));
-    document.querySelectorAll("a.transition-link").forEach(link => {
-      link.addEventListener("click", e => {
-        e.preventDefault();
-        const href = link.getAttribute("href");
-        document.body.classList.remove("fade-in");
-        document.body.style.opacity = 0;
-        setTimeout(() => window.location.href = href, 300);
-      });
-    });
+    document.querySelectorAll("a.transition-link").forEach(link => link.addEventListener("click", e => {
+      e.preventDefault(); const href = link.getAttribute("href"); document.body.classList.remove("fade-in"); document.body.style.opacity = 0;
+      setTimeout(() => window.location.href = href, 300);
+    }));
     let lastY = window.scrollY, navBar = document.querySelector("nav");
     window.addEventListener("scroll", () => {
       window.scrollY > lastY ? navBar.classList.add("opacity-60") : navBar.classList.remove("opacity-60");
       lastY = window.scrollY;
     });
+    document.getElementById("searchToggle").onclick = () => document.getElementById("searchDropdown").classList.toggle("hidden-search");
+    document.getElementById("searchForm").onsubmit = e => {
+      e.preventDefault(); const q = document.getElementById("searchInput").value.trim() || "ai";
+      window.location.href = `explore.html?company=${encodeURIComponent(q)}`;
+    };
   </script>
 
   <!-- Supabase Auth Logic -->
   <script>
-    const supabaseUrl = 'https://qiiozzvsfpnhoxaamftf.supabase.co';
-    const supabaseKey = 'YOUR_ANON_PUBLIC_KEY';
+    const SUPA_URL = 'https://qiiozzvsfpnhoxaamftf.supabase.co';
+    const SUPA_KEY = 'YOUR_ANON_PUBLIC_KEY';
     const { createClient } = supabase;
-    const supabaseClient = createClient(supabaseUrl, supabaseKey);
+    const supabaseClient = createClient(SUPA_URL, SUPA_KEY);
 
-    const authForm = document.getElementById('authForm');
-    authForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
+    document.getElementById('signInBtn').onclick = async () => {
       const email = document.getElementById('emailInput').value;
       const pass  = document.getElementById('passwordInput').value;
-      // Attempt sign in
-      let { data: { user }, error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
-      if (error) {
-        // If no user, sign up
-        const res = await supabaseClient.auth.signUp({ email, password: pass });
-        user = res.data.user;
-        error = res.error;
-      }
-      if (error) {
-        alert('Auth error: ' + error.message);
-      } else {
-        window.location.replace('explore.html');
-      }
-    });
+      const { error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
+      if (error) return alert(error.message);
+      window.location.replace('explore.html');
+    };
+    document.getElementById('signUpBtn').onclick = async () => {
+      const email = document.getElementById('emailInput').value;
+      const pass  = document.getElementById('passwordInput').value;
+      const { error } = await supabaseClient.auth.signUp({ email, password: pass });
+      if (error) return alert(error.message);
+      window.location.replace('explore.html');
+    };
+    document.getElementById('googleBtn').onclick = () => {
+      supabaseClient.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/explore.html' } });
+    };
   </script>
+
 </body>
 </html>
