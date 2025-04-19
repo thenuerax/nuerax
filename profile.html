@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-[#0F1115] text-[#F5F7FA] scroll-smooth">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Nuerax — My Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    html,body{margin:0;padding:0;width:100%;height:100%}
+    body{opacity:0;background:#0F1115;transition:opacity .5s}
+    body.fade-in{opacity:1}
+  </style>
+</head>
+<body class="font-sans antialiased">
+
+  <script>
+    const supabaseClient = supabase.createClient(
+      'https://qiiozzvsfpnhoxaamftf.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.…'
+    );
+    window.addEventListener("DOMContentLoaded", async()=>{
+      const { data:{ session } } = await supabaseClient.auth.getSession();
+      if(!session) return location.replace("login.html");
+      document.body.classList.add("fade-in");
+      const u = session.user.user_metadata;
+      document.getElementById("username").textContent = "@" + u.username;
+      document.getElementById("fullName").textContent = u.name;
+      document.getElementById("email").textContent    = session.user.email;
+      document.getElementById("phone").textContent    = u.phone;
+    });
+  </script>
+
+  <div class="p-8 max-w-lg mx-auto mt-24 bg-[#1A1D21] rounded-2xl shadow-lg">
+    <h1 class="text-3xl font-bold mb-6">My Profile</h1>
+    <p><strong>Username:</strong> <span id="username"></span></p>
+    <p><strong>Full Name:</strong> <span id="fullName"></span></p>
+    <p><strong>Email:</strong> <span id="email"></span></p>
+    <p><strong>Phone:</strong> <span id="phone"></span></p>
+    <button id="logoutBtn" class="mt-6 bg-gradient-to-br from-red-500 to-pink-500 text-black px-6 py-2 rounded-xl font-semibold hover:opacity-80 transition">
+      Log Out
+    </button>
+  </div>
+
+  <script>
+    document.getElementById("logoutBtn").onclick = async () => {
+      await supabaseClient.auth.signOut();
+      location.replace("login.html");
+    };
+  </script>
+
+</body>
+</html>
