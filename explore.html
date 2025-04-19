@@ -1,63 +1,78 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-[#0F1115] text-[#F5F7FA] scroll-smooth">
+<html lang="en" class="bg-[#1C1F22] text-[#F5F7FA]">
 <head>
   <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Nuerax — Explore AI News</title>
-
+  <title>Nuerax — Explore</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.11.1/tsparticles.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
   <style>
     html,body{margin:0;padding:0;width:100%;height:100%}
-    body{opacity:0;background:#0F1115 radial-gradient(circle at20%20%,rgba(0,255,255,0.05)0%,transparent70%),radial-gradient(circle at80%40%,rgba(255,0,255,0.05)0%,transparent70%);transition:opacity .5s;}
-    body.fade-in{opacity:1}nav{transition:background-color .3s,box-shadow .3s}.hidden-search{display:none;}
+    body {
+      background-color: #1C1F22;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(0,255,255,0.05) 0%, transparent 70%),
+        radial-gradient(circle at 80% 40%, rgba(255,0,255,0.05) 0%, transparent 70%);
+    }
   </style>
 </head>
-<body class="font-sans antialiased">
+<body class="pt-24 px-6">
 
-  <div id="tsparticles" class="fixed inset-0 z-0 pointer-events-none"></div>
-
-  <nav id="navbar" class="fixed top-0 left-0 w-full px-6 py-4 flex justify-between items-center z-50 bg-[#0F1115]/90 backdrop-blur-md border-b border-white/10 shadow-sm">
-    <a href="index.html" class="text-2xl font-bold text-white">Nuerax</a>
-    <div class="flex items-center space-x-4">
-      <img id="searchToggle" src="https://i.imgur.com/J3IfkLV.png" class="w-6 h-6 cursor-pointer" alt="🔍"/>
-      <button id="authBtn" class="text-[#00FFFF] border border-[#00FFFF] px-4 py-1 rounded-full hover:bg-[#00FFFF] hover:text-black transition">
-        Log In
-      </button>
-    </div>
+  <!-- Nav -->
+  <nav class="fixed top-0 left-0 w-full flex justify-between p-6 bg-[#1C1F22]/80 backdrop-blur-md">
+    <a href="index.html" class="text-2xl font-bold">Nuerax</a>
+    <button id="authBtn" class="border border-cyan-400 px-4 py-1 rounded-xl">Log In</button>
   </nav>
 
-  <section id="feed" class="relative z-10 w-full max-w-5xl mx-auto px-4 fade-in mt-40">
-    <div id="news-container"><p class="text-[#A1A6AD]">Loading news...</p></div>
-  </section>
+  <!-- News Feed -->
+  <h2 class="text-2xl font-semibold mb-4">Latest AI News</h2>
+  <div id="news-container" class="space-y-6 text-gray-400">Loading news…</div>
 
   <script>
-    tsParticles.load("tsparticles",{ fullScreen:{enable:false},background:{color:"#0F1115"},
-      particles:{number:{value:50,density:{enable:true,value_area:800}},color:{value:"#00FFFF"},
-      shape:{type:"circle"},opacity:{value:0.3},size:{value:2},
-      links:{enable:true,distance:130,color:"#00FFFF",opacity:0.2,width:1},
-      move:{enable:true,speed:0.5,direction:"none",outModes:{default:"bounce"}}},
-      interactivity:{events:{onHover:{enable:true,mode:"grab"},resize:true},modes:{grab:{distance:140,links:{opacity:0.3}}}},
-      detectRetina:true});
-    document.addEventListener("DOMContentLoaded",()=>document.body.classList.add("fade-in"));
-    document.querySelectorAll("a.transition-link").forEach(link=>link.onclick=e=>{e.preventDefault();const h=link.getAttribute("href");document.body.classList.remove("fade-in");document.body.style.opacity=0;setTimeout(()=>location.href=h,300);});
-    let lastY=window.scrollY,nav=document.getElementById("navbar");window.addEventListener("scroll",()=>{window.scrollY>lastY?nav.classList.add("opacity-60"):nav.classList.remove("opacity-60");lastY=window.scrollY;});
-    document.getElementById("searchToggle").onclick=()=>document.querySelector(".hidden-search").classList.toggle("hidden");
-    document.querySelector("#searchForm")?.addEventListener("submit",e=>{e.preventDefault();const q=document.getElementById("searchInput").value.trim()||"ai";location.href=`explore.html?company=${encodeURIComponent(q)}`;});
-
-    const supabaseClient = supabase.createClient('https://qiiozzvsfpnhoxaamftf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.…');
-    const authBtn = document.getElementById("authBtn");
-    window.addEventListener("DOMContentLoaded",async()=>{
-      const {data:{session}}=await supabaseClient.auth.getSession();
-      if(!session) return location.replace("login.html");
-      document.body.classList.add("fade-in");
-      authBtn.textContent=`@${session.user.user_metadata.username}`;
-      authBtn.onclick=()=>location.href="profile.html";
+    // Auth guard & username
+    const supabase = supabase.createClient(
+      'https://qiiozzvsfpnhoxaamftf.supabase.co',
+      'YOUR_SUPABASE_ANON_KEY'
+    );
+    const authBtn = document.getElementById('authBtn');
+    supabase.auth.onAuthStateChange((_, s) => {
+      if (s) {
+        authBtn.textContent = '@' + s.user.user_metadata.username;
+        authBtn.onclick = () => location.href = 'profile.html';
+      } else {
+        authBtn.textContent = 'Log In';
+        authBtn.onclick = () => location.href = 'login.html';
+      }
     });
+    (async ()=>{
+      const { data:{ session } } = await supabase.auth.getSession();
+      if (!session) return location.replace('login.html');
+      authBtn.textContent = '@' + session.user.user_metadata.username;
+      authBtn.onclick = () => location.href = 'profile.html';
+    })();
 
-    // fetch & render news (unchanged)...
+    // Fetch and render news
+    async function loadNews(){
+      try {
+        const res = await fetch(`/api/news?company=ai`);
+        const articles = await res.json();
+        const container = document.getElementById('news-container');
+        container.innerHTML = '';
+        articles.forEach(a=>{
+          const card = document.createElement('div');
+          card.className = 'bg-[#2A2D31] p-4 rounded-xl';
+          card.innerHTML = `
+            <p class="text-sm text-gray-400">${new Date(a.publishedAt).toLocaleDateString()}</p>
+            <h3 class="font-medium">${a.title}</h3>
+            <p class="text-gray-400">${a.description||''}</p>
+            <a href="${a.url}" target="_blank" class="text-cyan-400 underline text-sm">Read more →</a>
+          `;
+          container.appendChild(card);
+        });
+      } catch {
+        document.getElementById('news-container').textContent = 'Error loading news.';
+      }
+    }
+    loadNews();
   </script>
-
 </body>
 </html>
